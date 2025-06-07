@@ -20,11 +20,23 @@ module.exports.product = async (req, res) => {
   let find = {
     deleted: false,
   };
-  find.status = req.query.status;
+  if (req.query.status) {
+    find.status = req.query.status;
+  }
+
+  let keyword = "";
+  if (req.query.keyword) {
+    keyword = req.query.keyword;
+    const regex = new RegExp(keyword, "i");
+
+    find.title = regex;
+  }
   const products = await Product.find(find);
+
   res.render("admin/pages/products/index", {
     pageTitle: "Trang sản phẩm",
     products: products,
     filterStatus: filterStatus,
+    keyword: keyword,
   });
 };
