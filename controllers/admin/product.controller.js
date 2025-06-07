@@ -3,6 +3,7 @@ const Product = require("../../models/product.model");
 const filterStatusHelper = require("../../helper/filterStatus");
 const searchHelper = require("../../helper/search");
 const paginationHelper = require("../../helper/pagination");
+const { ObjectId } = require("mongoose").Types;
 // [GET] /admin/products
 module.exports.product = async (req, res) => {
   // đoạn bộ lọc
@@ -45,4 +46,28 @@ module.exports.product = async (req, res) => {
     keyword: objectSearch.keyword,
     pagination: objectPagination,
   });
+};
+
+//[Get] /admin/products/change-status/:status/:id
+module.exports.changeStatus = async (req, res) => {
+  const status = req.params.status;
+  const id = req.params.id;
+
+  console.log("Query string:", req.query); // Debug query string
+
+  if (!ObjectId.isValid(id)) {
+    console.error("ID không hợp lệ:", id);
+    return res.redirect("/admin/products");
+  }
+
+  await Product.updateOne({ _id: id }, { status: status });
+
+  const queryString = req.query
+    ? new URLSearchParams(req.query).toString()
+    : "";
+  console.log(
+    "Redirect URL:",
+    `/admin/products${queryString ? `?${queryString}` : ""}`
+  );
+  res.redirect(`/admin/products${queryString ? `?${queryString}` : ""}`);
 };
