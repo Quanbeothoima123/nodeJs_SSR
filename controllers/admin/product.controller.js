@@ -1,6 +1,8 @@
 const { deleteModel } = require("mongoose");
 const Product = require("../../models/product.model");
 const filterStatusHelper = require("../../helper/filterStatus");
+const searchHelper = require("../../helper/search");
+const paginationHelper = require("../../helper/pagination");
 // [GET] /admin/products
 module.exports.product = async (req, res) => {
   // đoạn bộ lọc
@@ -12,19 +14,35 @@ module.exports.product = async (req, res) => {
     find.status = req.query.status;
   }
 
-  let keyword = "";
-  if (req.query.keyword) {
-    keyword = req.query.keyword;
-    const regex = new RegExp(keyword, "i");
+  const objectSearch = searchHelper(req.query);
 
-    find.title = regex;
+  // đoạn tìm kiếm bằng từ tên sản phẩm
+  if (objectSearch.regex) {
+    find.title = objectSearch.regex;
   }
-  const products = await Product.find(find);
+
+  //pagination
+  const countProducts = await Product.countDocuments(find);
+  let objectPagination = paginationHelper(
+    {
+      currentPage: 1,
+      limitItems: 4,
+    },
+    req.query,
+    countProducts
+  );
+
+  //end pagination
+
+  const products = await Product.find(find)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip);
 
   res.render("admin/pages/products/index", {
     pageTitle: "Trang sản phẩm",
     products: products,
     filterStatus: filterStatus,
-    keyword: keyword,
+    keyword: objectSearch.keyword,
+    pagination: objectPagination,
   });
 };
