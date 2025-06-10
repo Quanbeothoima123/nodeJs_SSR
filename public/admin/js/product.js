@@ -15,7 +15,10 @@ if (buttonChangeStatus.length > 0) {
 
       let statusChange = statusCurrent === "active" ? "inactive" : "active";
       // Thêm window.location.search để giữ query string (ví dụ: ?page=2)
-      const action = `${path}/${statusChange}/${id}${window.location.search}`;
+      const action = `${path}/${statusChange}/${id}${window.location.search}${
+        window.location.search ? "&" : "?"
+      }_method=PATCH`;
+
       formChangeStatus.action = action;
       console.log("Form action:", action); // Debug URL
       formChangeStatus.submit();

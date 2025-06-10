@@ -3,7 +3,7 @@ const Product = require("../../models/product.model");
 const filterStatusHelper = require("../../helper/filterStatus");
 const searchHelper = require("../../helper/search");
 const paginationHelper = require("../../helper/pagination");
-const { ObjectId } = require("mongoose").Types;
+const mongoose = require("mongoose");
 // [GET] /admin/products
 module.exports.product = async (req, res) => {
   // đoạn bộ lọc
@@ -50,24 +50,13 @@ module.exports.product = async (req, res) => {
 
 //[Get] /admin/products/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
-  const status = req.params.status;
-  const id = req.params.id;
+  const { status, id } = req.params;
 
-  console.log("Query string:", req.query); // Debug query string
-
-  if (!ObjectId.isValid(id)) {
-    console.error("ID không hợp lệ:", id);
-    return res.redirect("/admin/products");
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send("ID không hợp lệ");
   }
 
-  await Product.updateOne({ _id: id }, { status: status });
+  await Product.updateOne({ _id: id }, { status });
 
-  const queryString = req.query
-    ? new URLSearchParams(req.query).toString()
-    : "";
-  console.log(
-    "Redirect URL:",
-    `/admin/products${queryString ? `?${queryString}` : ""}`
-  );
-  res.redirect(`/admin/products${queryString ? `?${queryString}` : ""}`);
+  res.redirect(req.get("referer") || "/admin/products");
 };
