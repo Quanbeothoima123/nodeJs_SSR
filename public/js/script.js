@@ -49,3 +49,63 @@ if (buttonPagination) {
 }
 
 //End pagination
+
+//Check box Multi
+
+const checkboxMulti = document.querySelector("[checkbox-multi]");
+if (checkboxMulti) {
+  const inputCheckAll = checkboxMulti.querySelector("input[name='checkall']");
+  const inputId = checkboxMulti.querySelectorAll("input[name='id']");
+  inputCheckAll.addEventListener("click", () => {
+    if (inputCheckAll.checked) {
+      // check tất cả
+      inputId.forEach((input) => {
+        input.checked = true;
+      });
+    } else {
+      // bỏ check tất cả
+      inputId.forEach((input) => {
+        input.checked = false;
+      });
+    }
+  });
+  inputId.forEach((input) => {
+    input.addEventListener("click", () => {
+      const countChecked = checkboxMulti.querySelectorAll(
+        "input[name='id']:checked"
+      ).length;
+      if (countChecked === inputId.length) {
+        inputCheckAll.checked = true;
+      } else {
+        inputCheckAll.checked = false;
+      }
+    });
+  });
+}
+//ENd checkbox Multi
+
+//Form change Multi
+const formChangeMulti = document.querySelector("[form-change-multi]");
+if (formChangeMulti) {
+  formChangeMulti.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const checkboxMulti = document.querySelector("[checkbox-multi]");
+    const inputChecked = checkboxMulti.querySelectorAll(
+      "input[name='id']:checked"
+    );
+    if (inputChecked.length > 0) {
+      let ids = [];
+      const inputIds = formChangeMulti.querySelector("input[name='ids']");
+      inputChecked.forEach((input) => {
+        const id = input.value;
+        ids.push(id); // Không dùng .join ở đây
+        inputIds.value = ids.join(","); // Gộp sau khi đã push xong
+      });
+      formChangeMulti.submit();
+    } else {
+      alert("Vui lòng chọn ít nhất một bản ghi");
+    }
+  });
+}
+//End Form change Multi
