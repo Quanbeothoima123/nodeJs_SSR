@@ -62,18 +62,28 @@ module.exports.changeStatus = async (req, res) => {
 };
 
 module.exports.changeMulti = async (req, res) => {
-  const type = req.body.type;
-  const ids = req.body.ids.split(", ");
-  switch (type) {
-    case "active":
-      await Product.updateMany({ _id: { $in: ids } }, { status: "active" });
-      break;
-    case "inactive":
-      await Product.updateMany({ _id: { $in: ids } }, { status: "inactive" });
-      break;
-    default:
-      break;
+  const { type, ids } = req.body;
+  const idArray = ids
+    .split(",")
+    .filter((id) => mongoose.Types.ObjectId.isValid(id));
+
+  if (idArray.length === 0) {
+    return res.status(400).send("Không có ID hợp lệ");
   }
 
-  res.send("OK");
+  switch (type) {
+    case "active":
+      await Product.updateMany({ _id: { $in: idArray } }, { status: "active" });
+      break;
+    case "inactive":
+      await Product.updateMany(
+        { _id: { $in: idArray } },
+        { status: "inactive" }
+      );
+      break;
+    default:
+      return res.status(400).send("Loại không hợp lệ");
+  }
+
+  res.redirect(req.get("referer") || "/admin/products");
 };
