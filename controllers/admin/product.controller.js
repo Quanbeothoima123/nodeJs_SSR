@@ -36,6 +36,7 @@ module.exports.product = async (req, res) => {
   //end pagination
 
   const products = await Product.find(find)
+    .sort({ position: "desc" })
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip);
 
@@ -64,9 +65,7 @@ module.exports.changeStatus = async (req, res) => {
 //[PATCH] /admin/products/changeMulti, active, inactive, delete-all
 module.exports.changeMulti = async (req, res) => {
   const { type, ids } = req.body;
-  const idArray = ids
-    .split(",")
-    .filter((id) => mongoose.Types.ObjectId.isValid(id));
+  const idArray = ids.split(",");
 
   if (idArray.length === 0) {
     return res.status(400).send("Không có ID hợp lệ");
@@ -81,6 +80,7 @@ module.exports.changeMulti = async (req, res) => {
         { _id: { $in: idArray } },
         { status: "inactive" }
       );
+      break;
     case "delete-all":
       await Product.updateMany(
         { _id: { $in: idArray } },
@@ -89,6 +89,13 @@ module.exports.changeMulti = async (req, res) => {
           deleteAt: new Date(),
         }
       );
+      break;
+    case "change-position":
+      for (const item of idArray) {
+        let [id, position] = item.split("-");
+        position = parseInt(position);
+        await Product.updateOne({ _id: id }, { position: position });
+      }
       break;
     default:
       return res.status(400).send("Loại không hợp lệ");

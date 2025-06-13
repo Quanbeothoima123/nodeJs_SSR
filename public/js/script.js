@@ -99,8 +99,6 @@ if (formChangeMulti) {
       const deleteConfirm = confirm("Bạn có chắc chắn muốn xóa không");
       if (!deleteConfirm) {
         return;
-      } else {
-        formChangeMulti.submit();
       }
     }
     if (inputChecked.length > 0) {
@@ -108,9 +106,17 @@ if (formChangeMulti) {
       const inputIds = formChangeMulti.querySelector("input[name='ids']");
       inputChecked.forEach((input) => {
         const id = input.value;
-        ids.push(id); // Không dùng .join ở đây
-        inputIds.value = ids.join(","); // Gộp sau khi đã push xong
+        if (typeChange == "change-position") {
+          const position = input
+            .closest("tr")
+            .querySelector("input[name='position']").value;
+
+          ids.push(`${id}-${position}`);
+        } else {
+          ids.push(id); // Không dùng .join ở đây
+        }
       });
+      inputIds.value = ids.join(","); // Gộp sau khi đã push xong
       formChangeMulti.submit();
     } else {
       alert("Vui lòng chọn ít nhất một bản ghi");

@@ -27,6 +27,7 @@ block main
                         th Hình ảnh
                         th Tiêu đề
                         th Giá
+                        th Vị trí
                         th Trạng thái
                         th Hành động
                 tbody
@@ -44,6 +45,14 @@ block main
                                 )
                             td #{item.title}
                             td #{item.price}$
+                            td
+                                input(
+                                    type="number"
+                                    value=item.position 
+                                    style="width:60px"
+                                    min="1"
+                                    name="position"
+                                )
                             td
                                 if item.status == "active"
                                     a(href="javascript:;" class="badge badge-success" data-status=item.status button-change-status data-id=item.id) Hoạt động
