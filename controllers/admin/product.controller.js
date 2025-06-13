@@ -61,6 +61,7 @@ module.exports.changeStatus = async (req, res) => {
   res.redirect(req.get("referer") || "/admin/products");
 };
 
+//[PATCH] /admin/products/changeMulti, active, inactive, delete-all
 module.exports.changeMulti = async (req, res) => {
   const { type, ids } = req.body;
   const idArray = ids
@@ -80,6 +81,14 @@ module.exports.changeMulti = async (req, res) => {
         { _id: { $in: idArray } },
         { status: "inactive" }
       );
+    case "delete-all":
+      await Product.updateMany(
+        { _id: { $in: idArray } },
+        {
+          deleted: true,
+          deleteAt: new Date(),
+        }
+      );
       break;
     default:
       return res.status(400).send("Loại không hợp lệ");
@@ -87,3 +96,14 @@ module.exports.changeMulti = async (req, res) => {
 
   res.redirect(req.get("referer") || "/admin/products");
 };
+
+//[DELETE] /admin/products/delete/:id
+
+module.exports.deleteItem = async (req, res) => {
+  const id = req.params.id;
+  await Product.updateOne({ _id: id }, { deleted: true, deleteAt: new Date() });
+
+  res.redirect(req.get("referer") || "/admin/products");
+};
+
+//
