@@ -59,7 +59,9 @@ module.exports.changeStatus = async (req, res) => {
 
   await Product.updateOne({ _id: id }, { status });
 
-  res.redirect(req.get("referer") || "/admin/products");
+  req.flash("success", "Cập nhật trạng thái thành công!");
+
+  res.redirect(req.get("referer") || "/admin/products"); // Quay trở lại trang trước hoặc trở về mặc định sản phẩm
 };
 
 //[PATCH] /admin/products/changeMulti, active, inactive, delete-all
@@ -74,11 +76,19 @@ module.exports.changeMulti = async (req, res) => {
   switch (type) {
     case "active":
       await Product.updateMany({ _id: { $in: idArray } }, { status: "active" });
+      req.flash(
+        "success",
+        `Cập nhật trạng thái thành công của ${idArray.length} sản phẩm`
+      );
       break;
     case "inactive":
       await Product.updateMany(
         { _id: { $in: idArray } },
         { status: "inactive" }
+      );
+      req.flash(
+        "success",
+        `Cập nhật trạng thái thành công của ${idArray.length} sản phẩm`
       );
       break;
     case "delete-all":
@@ -89,6 +99,7 @@ module.exports.changeMulti = async (req, res) => {
           deleteAt: new Date(),
         }
       );
+      req.flash("success", `Xóa thành công của ${idArray.length} sản phẩm`);
       break;
     case "change-position":
       for (const item of idArray) {
@@ -96,6 +107,10 @@ module.exports.changeMulti = async (req, res) => {
         position = parseInt(position);
         await Product.updateOne({ _id: id }, { position: position });
       }
+      req.flash(
+        "success",
+        `Thay đổi vị trí thành công của ${idArray.length} sản phẩm`
+      );
       break;
     default:
       return res.status(400).send("Loại không hợp lệ");
@@ -109,7 +124,7 @@ module.exports.changeMulti = async (req, res) => {
 module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
   await Product.updateOne({ _id: id }, { deleted: true, deleteAt: new Date() });
-
+  req.flash("success", `Xóa thành công sản phẩm`);
   res.redirect(req.get("referer") || "/admin/products");
 };
 
