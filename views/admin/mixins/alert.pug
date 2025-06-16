@@ -3,3 +3,12 @@ mixin alert-success(time)
         .messages.info      
             div(class ="alert alert-success" show-alert data-time=`${time}`) #{messages.success}
                 span(close-alert) X
+
+mixin alert-error(time)
+  if messages.error
+    .message-info
+      div(
+        class="alert alert-danger"
+        show-alert
+        data-time=time
+      ) #{messages.error} <span close-alert>X</span>

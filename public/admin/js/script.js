@@ -138,3 +138,32 @@ if (showAlert) {
   });
 }
 //End show alert
+
+//Upload image
+const uploadImage = document.querySelector("[upload-image]");
+if (uploadImage) {
+  const uploadImageInput = uploadImage.querySelector("[upload-image-input]");
+  const uploadImagePreview = uploadImage.querySelector(
+    "[upload-image-preview]"
+  );
+  const uploadImageRemove = uploadImage.querySelector("[upload-image-remove]");
+
+  if (uploadImageInput && uploadImagePreview && uploadImageRemove) {
+    uploadImageInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const imageURL = URL.createObjectURL(file);
+        uploadImagePreview.src = imageURL;
+        uploadImageRemove.style.display = "inline-block"; // hiện nút xoá
+      }
+    });
+
+    uploadImageRemove.addEventListener("click", () => {
+      uploadImageInput.value = ""; // xoá file trong input
+      uploadImagePreview.src = ""; // xoá preview
+      uploadImageRemove.style.display = "none"; // ẩn nút xoá
+    });
+  }
+}
+
+//End upload image
