@@ -1,0 +1,53 @@
+extends ../../layouts/default.pug
+
+block main
+    .container.mt-4
+        .card.shadow
+            .card-body
+                if (product.title)
+                    h2.card-title.text-primary.mb-4 #{product.title}
+
+                .row
+                    if (product.thumbnail)
+                        .col-md-4.mb-3
+                            img(src=product.thumbnail, alt="Thumbnail", class="img-fluid rounded border")
+
+                    .col-md-8
+                        if (product.price)
+                            p.mb-2
+                                strong Giá: 
+                                span.text-success #{product.price}$
+                        
+                        if (product.discountPercentage)
+                            p.mb-2
+                                strong Giảm giá: 
+                                span.text-danger #{product.discountPercentage}%
+                        
+                        if (product.stock)
+                            p.mb-2
+                                strong Còn lại: 
+                                span.badge.badge-warning #{product.stock}
+                        
+                        if (product.status)
+                            p.mb-2
+                                strong Trạng thái: 
+                                if (product.status === "active")
+                                    span.badge.badge-success.ml-1 Hoạt động
+                                else
+                                    span.badge.badge-danger.ml-1 Dừng hoạt động
+                        
+                        if (product.position)
+                            p.mb-2
+                                strong Vị trí: 
+                                span #{product.position}
+
+                if (product.description)
+                    hr
+                    h5.mt-4 Mô tả sản phẩm:
+                    p.text-muted #{product.description}
+                a(
+                    href=`${prefixAdmin}/products/edit/${product.id}`
+                    class="btn btn-warning"
+                ) Chỉnh sửa
+
+    script(src="/admin/js/product.js") 
