@@ -1,0 +1,34 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+block main
+    .container.mt-5
+        .row
+            .col-md-6
+                if product.thumbnail
+                    img(src=product.thumbnail, alt=product.title, class="img-fluid rounded border")
+
+            .col-md-6
+                h2.text-primary.mb-3 #{product.title}
+
+                if product.price
+                    h4.text-success Giá: #{product.price}$
+
+                if product.discountPercentage
+                    p.text-danger.mb-2 Giảm giá: #{product.discountPercentage}%
+
+                if product.stock
+                    p.mb-2 
+                        strong Còn lại: 
+                        span.badge.badge-warning.ml-2 #{product.stock}
+
+                if product.position
+                    p.text-muted.mb-2 Vị trí: #{product.position}
+
+                // Nút mua hoặc quay lại (tuỳ bạn muốn dùng không)
+                .mt-4
+                    a.btn.btn-outline-primary(href="/products") ← Quay lại danh sách
+
+        if product.description
+            hr
+            h4.mt-5 Mô tả sản phẩm
+            p.text-justify.text-muted #{product.description}
