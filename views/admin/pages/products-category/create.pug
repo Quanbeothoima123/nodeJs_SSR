@@ -1,0 +1,103 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main 
+    +alert-error(5000) 
+    h1(class="mb-4") Thêm mới danh mục sản phẩm
+
+    form(action=`${prefixAdmin}/products-category/create`, id="form-create-category", method="POST" enctype="multipart/form-data")
+        //- Tiêu đề
+        div(class="form-group")
+            label(for="title") Tên danh mục
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required
+            )
+
+        //- Danh mục cha
+        //- div(class="form-group")
+        //-     label(for="parent_id") Danh mục cha
+        //-     select(class="form-control", id="parent_id", name="parent_id")
+        //-         option(value="") -- Chọn danh mục cha (nếu có) --
+        //-         //- Các option danh mục cha sẽ được render động từ server (nếu có)
+
+        div(class="form-group")
+            label(for="parent_id") Danh mục cha
+            input(
+                type="text"
+                class="form-control"
+                id="parent_id"
+                name="parent_id"
+            )
+
+        //- Mô tả
+        div(class="form-group")
+            label(for="description") Mô tả
+            textarea(
+                class="form-control"
+                id="description"
+                name="description"
+                rows="4"
+            )
+
+        //- Ảnh thumbnail
+        div(class="form-group" upload-image)
+            label(for="thumbnail") Ảnh danh mục
+            input(
+                type="file"
+                class="form-control-file"
+                id="thumbnail"
+                name="thumbnail"
+                accept="image/*"
+                upload-image-input
+            )
+            br
+            button(type="button" class="btn btn-danger mt-2" upload-image-remove style="display: none") Xoá ảnh
+            br
+            image(src="" upload-image-preview class="image-preview")
+
+        //- Vị trí
+        div(class="form-group")
+            label(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                placeholder="Tự động tăng"
+                min="1"
+            )
+
+        //- Trạng thái
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
+                name="status"
+                value="active"
+                checked
+            )
+            label(for="statusActive" class="form-check-label") Hoạt động
+
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusInActive"
+                name="status"
+                value="inactive"
+            )
+            label(for="statusInActive" class="form-check-label") Dừng hoạt động
+
+        //- Nút submit
+        div(class="form-group")
+            button(
+                type="submit"
+                class="btn btn-success"
+            ) Tạo danh mục
+
+    script(src="/admin/js/category.js")
