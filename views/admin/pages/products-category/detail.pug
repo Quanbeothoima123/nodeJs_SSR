@@ -1,0 +1,42 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-4
+    .card.shadow
+      .card-body
+        if productCategory.title
+          h2.card-title.text-primary.mb-4 #{productCategory.title}
+
+        .row
+          if productCategory.thumbnail
+            .col-md-4.mb-3
+              img(src=productCategory.thumbnail, alt="Thumbnail", class="img-fluid rounded border")
+
+          .col-md-8
+            if productCategoryParent
+              p.mb-2
+                strong Danh mục cha: 
+                span.text-dark #{productCategoryParent.title}
+
+            if productCategory.status
+              p.mb-2
+                strong Trạng thái: 
+                if productCategory.status === "active"
+                  span.badge.badge-success.ml-1 Hoạt động
+                else
+                  span.badge.badge-danger.ml-1 Dừng hoạt động
+
+            if productCategory.position
+              p.mb-2
+                strong Vị trí: 
+                span #{productCategory.position}
+
+        if productCategory.description
+          hr
+          h5.mt-4 Mô tả danh mục:
+          .text-muted!= productCategory.description
+
+        a(
+          href=`${prefixAdmin}/products-category/edit/${productCategory._id}`
+          class="btn btn-warning mt-3"
+        ) Chỉnh sửa

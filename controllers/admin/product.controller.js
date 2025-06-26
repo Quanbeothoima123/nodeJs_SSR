@@ -187,15 +187,20 @@ module.exports.editPatch = async (req, res) => {
   req.body.discountPercentage = parseInt(req.body.discountPercentage);
   req.body.stock = parseInt(req.body.stock);
 
-  if (req.file) {
-    req.body.thumbnail = `/uploads/${req.file.filename}`;
+  if (!req.body.thumbnail) {
+    // Nếu không upload ảnh mới, lấy lại ảnh cũ từ DB
+    const oldProduct = await Product.findById(req.params.id);
+    req.body.thumbnail = oldProduct.thumbnail;
   }
+
   try {
     await Product.updateOne({ _id: req.params.id }, req.body);
     req.flash("success", "Cập nhật sản phẩm thành công");
   } catch (error) {
+    console.error(error);
     req.flash("error", "Cập nhật sản phẩm thất bại");
   }
+
   res.redirect(req.get("referer"));
 };
 

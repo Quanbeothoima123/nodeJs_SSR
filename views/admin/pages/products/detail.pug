@@ -42,9 +42,10 @@ block main
                                 span #{product.position}
 
                 if (product.description)
-                    hr
-                    h5.mt-4 Mô tả sản phẩm:
-                    p.text-muted #{product.description}
+                hr
+                h5.mt-4 Mô tả sản phẩm:
+                .text-muted !{product.description}
+
                 a(
                     href=`${prefixAdmin}/products/edit/${product.id}`
                     class="btn btn-warning"

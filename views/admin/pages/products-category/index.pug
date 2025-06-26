@@ -1,7 +1,25 @@
 extends ../../layouts/default.pug
-
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
+include ../../mixins/table-tree.pug
 block main
+  +alert-success(5000)
   h1 Danh mục sản phẩm
+
+  // Bộ lọc & tìm kiếm
+  .card.mb-3
+    .card-header Bộ lọc và Tìm kiếm
+    .card-body
+      .row
+        .col-6
+          +filter-status(filterStatus)
+        .col-6
+          +search(keyword)
+
+  // Sắp xếp
   .card.mb-3
     .card-header Sắp xếp
     .card-body
@@ -15,55 +33,33 @@ block main
               option(value="title-desc") Tiêu đề Z - A
             button.btn.btn-danger.mt-2(sort-clear) Clear
 
+  // Danh sách danh mục
   .card.mb-3
     .card-header Danh sách danh mục
     .card-body
       .row
-        .col-12
-          a(href=`${prefixAdmin}/products-category/create` class="btn btn-outline-success") + Thêm mới
+        .col-8
+          +form-change-multi(`${prefixAdmin}/products-category/change-multi?_method=PATCH`)
+        .col-4
+          a(href=`${prefixAdmin}/products-category/create` class="btn btn-outline-success float-right") + Thêm mới
 
-      table(class="table table-hover table-sm" checkbox-multi)
+      table.table.table-hover.table-sm.table-bordered(checkbox-multi)
         thead
           tr
-            th 
+            th
               input(type="checkbox" name="checkall")
             th STT
             th Hình ảnh
             th Tiêu đề
-            th Danh mục cha
             th Vị trí
             th Trạng thái
             th Hành động
         tbody
-          each item, index in records
-            tr
-              td 
-                input(type="checkbox" name="id" value=item._id)
-              td #{index + 1}
-              td
-                if item.thumbnail
-                  img(src=item.thumbnail, alt=item.title, width="80px")
-                else
-                  i.text-muted Không có ảnh
-              td #{item.title}
-              td #{item.parent_id || 'Chưa có'}
-              td
-                input(
-                  type="number"
-                  value=item.position
-                  style="width:60px"
-                  min="1"
-                  name="position"
-                )
-              td
-                if item.status == "active"
-                  a(href="javascript:;" class="badge badge-success" data-status=item.status button-change-status data-id=item._id) Hoạt động
-                else
-                  a(href="javascript:;" class="badge badge-danger" data-status=item.status button-change-status data-id=item._id) Dừng hoạt động
-              td
-                a(href=`${prefixAdmin}/products-category/edit/${item._id}` class="btn btn-warning btn-sm") Sửa
-                button(class="btn btn-danger btn-sm ml-1" data-id=item._id button-delete) Xoá
+          +table-tree(records)
 
+  +pagination(pagination)
+
+  // Form JS dùng để xử lý status và xoá
   form(
     action=""
     method="POST"
@@ -78,4 +74,4 @@ block main
     data-path=`${prefixAdmin}/products-category/delete`
   )
 
-  script(src="/admin/js/product.js")
+  script(src="/admin/js/productCategory.js")
