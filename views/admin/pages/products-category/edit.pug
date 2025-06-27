@@ -1,6 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
-
+include ../../mixins/select-tree.pug
 block main 
   +alert-error(5000) 
   +alert-success(5000)
@@ -33,14 +33,17 @@ block main
       )= productCategory.description
 
     // Danh mục cha
-    .form-group
+    div(class="form-group")
       label(for="parent_id") Danh mục cha
-      input.form-control(
-        type="text"
-        id="parent_id"
+      select(
         name="parent_id"
-        value=productCategory.parent_id
+        id="parent_id"
+        class="form-control"
       )
+        option(value="") -- Chọn danh mục cha --
+        if (records)
+          +select-tree(records,productCategory.parent_id)
+
 
     // Ảnh thumbnail
     .form-group(upload-image)

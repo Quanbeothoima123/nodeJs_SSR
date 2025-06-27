@@ -25,28 +25,7 @@ module.exports.index = async (req, res) => {
     find.title = objectSearch.regex;
   }
 
-  //pagination
-  const countProductsCategory = await ProductCategory.countDocuments(find);
-  let objectPagination = paginationHelper(
-    {
-      currentPage: 1,
-      limitItems: 4,
-    },
-    req.query,
-    countProductsCategory
-  );
-
-  //SORT
-  let sort = {};
-  if (req.query.sortKey && req.query.sortValue) {
-    sort[req.query.sortKey] = req.query.sortValue;
-  } else sort.position = "desc";
-  //END SORT
-
-  const records = await ProductCategory.find(find)
-    .sort(sort)
-    .limit(objectPagination.limitItems)
-    .skip(objectPagination.skip);
+  const records = await ProductCategory.find(find);
   const newRecords = createTreeHelper.tree(records);
 
   res.render("admin/pages/products-category/index", {
@@ -54,7 +33,6 @@ module.exports.index = async (req, res) => {
     records: newRecords,
     filterStatus: filterStatus,
     keyword: objectSearch.keyword,
-    pagination: objectPagination,
   });
 };
 
@@ -203,9 +181,16 @@ module.exports.edit = async (req, res) => {
 
     const productCategory = await ProductCategory.findOne(find);
 
+    const records = await ProductCategory.find({
+      deleted: false,
+    });
+
+    const newRecords = createTreeHelper.tree(records);
+
     res.render("admin/pages/products-category/edit", {
       pageTitle: "Chỉnh sửa danh mục sản phẩm",
       productCategory: productCategory,
+      records: newRecords,
     });
   } catch (error) {
     res.redirect(`${systemConfig.prefixAdmin}/products-category`);
@@ -234,9 +219,10 @@ module.exports.editPatch = async (req, res) => {
   } catch (error) {
     console.error(error);
     req.flash("error", "Cập nhật danh mục thất bại");
+    res.redirect(req.get("referer"));
+    return;
   }
-
-  res.redirect(req.get("referer"));
+  res.redirect(`${systemConfig.prefixAdmin}/products-category`);
 };
 // [GET] /admin/products-category/detail/:id
 module.exports.detail = async (req, res) => {
