@@ -1,0 +1,17 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-4
+    .card.shadow
+      .card-body
+        if role.title
+          h2.card-title.text-primary.mb-4 #{role.title}
+        if role.description
+          hr
+          h5.mt-4 Mô tả vai trò:
+          .text-muted!= role.description
+
+        a(
+          href=`${prefixAdmin}/roles/edit/${role._id}`
+          class="btn btn-warning mt-3"
+        ) Chỉnh sửa

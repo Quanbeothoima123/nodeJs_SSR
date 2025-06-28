@@ -1,0 +1,37 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
+block main 
+  +alert-error(5000) 
+  +alert-success(5000)
+  h1(class="mb-4") Chỉnh sửa vai trò
+
+  form(
+    action=`${prefixAdmin}/roles/edit/${role._id}?_method=PATCH`
+    id="form-edit-role"
+    method="POST"
+  )
+    // Tiêu đề
+    .form-group
+      label(for="title") Tiêu đề
+      input.form-control(
+        type="text"
+        id="title"
+        name="title"
+        required
+        value=role.title
+      )
+
+    // Mô tả (TinyMCE)
+    .form-group
+      label(for="desc") Mô tả
+      textarea.form-control(
+        id="desc"
+        name="description"
+        rows="5"
+      )= role.description
+    // Nút cập nhật
+    .form-group
+      button.btn.btn-primary(type="submit") Cập nhật
+
+  script(src="/admin/js/role.js")

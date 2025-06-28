@@ -3,7 +3,6 @@ const ProductCategory = require("../../models/product-category.model");
 const systemConfig = require("../../config/system");
 const filterStatusHelper = require("../../helper/filterStatus");
 const searchHelper = require("../../helper/search");
-const paginationHelper = require("../../helper/pagination");
 const createTreeHelper = require("../../helper/createTree");
 const mongoose = require("mongoose");
 // Show danh sách sản phẩm [GET]
