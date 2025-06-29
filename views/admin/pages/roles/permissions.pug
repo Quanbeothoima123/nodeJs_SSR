@@ -1,24 +1,33 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
 
 block main
+  +alert-error(5000)
+  +alert-success(5000)
   h1(class="mb-4") Phân quyền
+
+  if(records)
+    div(data-records=records)
 
   div(class="text-right")
     button(
       type="submit",
       class="btn btn-primary mb-3",
-      id="button-submit"
+      button-submit
     ) Cập nhật
 
-  table(class="table table-hover table-sm table-bordered")
+  table(class="table table-hover table-sm table-bordered" table-permissions)
     thead
         tr.bg-secondary
             th Tính năng
             th(class="text-center") Quản trị viên
             th(class="text-center") Quản lý nội dung
-
-
     tbody
+      tr(data-name="id" class="d-none")
+        td
+        each item in records  
+          td(class="text-center")
+            input(type="text" value=item.id)
       tr
         td(colspan="3").bg-light.font-weight-bold
           b Danh mục sản phẩm
@@ -50,3 +59,79 @@ block main
           td.p-2
             div(class="d-flex justify-content-center align-items-center")
               input(type="checkbox" class="form-check-input custom-checkbox")
+      tr
+        td(colspan="3").bg-light.font-weight-bold
+          b Sản phẩm
+
+      tr(data-name="products_view")
+        td Xem
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+      tr(data-name="products_create")
+        td Thêm mới
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+      tr(data-name="products_edit")
+        td Chỉnh sửa
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+      tr.text-danger.font-weight-bold(data-name="products_delete")
+        td Xóa
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+      tr
+        td(colspan="3").bg-light.font-weight-bold
+          b Nhóm quyền
+
+      tr(data-name="roles_view")
+        td Xem
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+      tr(data-name="roles_create")
+        td Thêm mới
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+      tr(data-name="roles_edit")
+        td Chỉnh sửa
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+      tr.text-danger.font-weight-bold(data-name="roles_delete")
+        td Xóa
+        each item in records
+          td.p-2
+            div(class="d-flex justify-content-center align-items-center")
+              input(type="checkbox" class="form-check-input custom-checkbox")
+
+  form(
+    id="form-change-permissions"
+    method="POST"
+    action=`${prefixAdmin}/roles/permissions?_method=PATCH`
+    class="d-none"
+  )
+    div(class="form-group")
+      input(
+        type="text"
+        class="form-control"
+        name="permissions"
+      )
+  script(src="/admin/js/role.js")
