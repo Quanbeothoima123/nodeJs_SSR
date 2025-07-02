@@ -1,0 +1,54 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-4
+    .card.shadow
+      .card-body
+        if (account.fullName)
+          h2.card-title.text-primary.mb-4 #{account.fullName}
+
+        .row
+          if (account.avatar)
+            .col-md-4.mb-3
+              img(src=account.avatar, alt="Avatar", class="img-fluid rounded border")
+
+          .col-md-8
+            if (account.email)
+              p.mb-2
+                strong Email: 
+                span.text-dark.ml-1 #{account.email}
+
+            if (account.phone)
+              p.mb-2
+                strong SĐT: 
+                span.text-dark.ml-1 #{account.phone}
+
+            if (account.status)
+              p.mb-2
+                strong Trạng thái: 
+                if (account.status === "active")
+                  span.badge.badge-success.ml-1 Hoạt động
+                else
+                  span.badge.badge-secondary.ml-1 Không hoạt động
+
+            if (account.role && account.role.title)
+              p.mb-2
+                strong Nhóm quyền: 
+                span.text-dark.ml-1 #{account.role.title}
+
+            if (account.createdAt)
+              p.mb-2
+                strong Ngày tạo: 
+                span.text-dark.ml-1 #{new Date(account.createdAt).toLocaleString()}
+
+            if (account.updatedAt)
+              p.mb-2
+                strong Ngày cập nhật: 
+                span.text-dark.ml-1 #{new Date(account.updatedAt).toLocaleString()}
+
+        a(
+          href=`${prefixAdmin}/accounts/edit/${account._id}`
+          class="btn btn-warning"
+        ) Chỉnh sửa
+
+  script(src="/admin/js/account.js")

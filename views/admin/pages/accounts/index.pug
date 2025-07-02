@@ -1,0 +1,54 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main
+  +alert-error(5000) 
+  +alert-success(5000)
+  h1 Trang tài khoản
+  .card.mb-3
+    .card-header Danh sách tài khoản
+    .card-body
+      .row 
+        .col-8
+          a(href=`${prefixAdmin}/accounts/create` class="btn btn-outline-success") + Thêm mới
+      table.table.table-hover.table-sm(checkbox-multi)
+        thead
+          tr
+            th STT
+            th Avatar
+            th Họ tên
+            th Email
+            th SĐT
+            th Trạng thái
+            th Quyền
+            th Hành động
+        tbody
+          each item, index in accounts
+            tr
+              td #{index + 1}
+              td 
+                if item.avatar
+                  img(src=item.avatar, alt="avatar", width="40", height="40", style="object-fit: cover; border-radius: 50%")
+                else
+                  span.text-muted Không có
+              td #{item.fullName}
+              td #{item.email}
+              td #{item.phone}
+              td
+                if item.status == 'active'
+                  span.badge.badge-success Hoạt động
+                else
+                  span.badge.badge-secondary Không hoạt động
+              td #{item.role.title}
+              td
+                a(href=`${prefixAdmin}/accounts/detail/${item._id}` class="btn btn-warning btn-sm") Chi tiết
+                a(href=`${prefixAdmin}/accounts/edit/${item._id}` class="btn btn-success btn-sm ml-1") Sửa
+                button(class="btn btn-danger btn-sm ml-1" data-id=item._id button-delete) Xóa
+
+  form(
+    action=""
+    method="POST"
+    id="form-delete-item"
+    data-path=`${prefixAdmin}/accounts/delete`
+  )
+
+  script(src="/admin/js/account.js")
