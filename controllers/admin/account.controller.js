@@ -130,11 +130,13 @@ module.exports.editPatch = async (req, res) => {
     const updateData = {
       fullName: req.body.fullName?.trim(),
       email: req.body.email?.trim(),
-      password: md5(req.body.password),
       role: req.body.role,
       status: req.body.status || "inactive",
       avatar: req.body.avatar,
     };
+    if (req.body.password && req.body.password.trim() !== "") {
+      updateData.password = md5(req.body.password.trim());
+    }
 
     if (emailExist) {
       req.flash("error", "Tài khoản email đã tồn tại");
