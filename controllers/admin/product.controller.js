@@ -1,6 +1,6 @@
 const { deleteModel } = require("mongoose");
 const Product = require("../../models/product.model");
-
+const Account = require("../../models/account.model");
 const systemConfig = require("../../config/system");
 const filterStatusHelper = require("../../helper/filterStatus");
 const searchHelper = require("../../helper/search");
@@ -47,6 +47,22 @@ module.exports.product = async (req, res) => {
     .sort(sort)
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip);
+
+  for (const product of products) {
+    const accountId = product?.createdBy?.account_id;
+    if (accountId === undefined) {
+      product.timeCreated = null;
+    } else {
+      product.timeCreated = product.createdBy.createAt;
+    }
+    if (!accountId) {
+      product.accountFullName = "Chưa biết";
+      continue;
+    }
+
+    const user = await Account.findOne({ _id: accountId });
+    product.accountFullName = user ? user.fullName : "Chưa biết";
+  }
 
   res.render("admin/pages/products/index", {
     pageTitle: "Trang sản phẩm",
@@ -106,7 +122,10 @@ module.exports.changeMulti = async (req, res) => {
         { _id: { $in: idArray } },
         {
           deleted: true,
-          deleteAt: new Date(),
+          deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date(),
+          },
         }
       );
       req.flash("success", `Xóa thành công của ${idArray.length} sản phẩm`);
@@ -133,7 +152,16 @@ module.exports.changeMulti = async (req, res) => {
 
 module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
-  await Product.updateOne({ _id: id }, { deleted: true, deleteAt: new Date() });
+  await Product.updateOne(
+    { _id: id },
+    {
+      deleted: true,
+      deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date(),
+      },
+    }
+  );
   req.flash("success", `Xóa thành công sản phẩm`);
   res.redirect(req.get("referer") || "/admin/products");
 };
@@ -157,6 +185,9 @@ module.exports.createPost = async (req, res) => {
   } else {
     req.body.position = parseInt(req.body.position);
   }
+  req.body.createdBy = {
+    account_id: res.locals.user.id,
+  };
   const product = new Product(req.body);
   await product.save();
   res.redirect(`${systemConfig.prefixAdmin}/products`);

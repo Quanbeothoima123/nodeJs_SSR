@@ -12,6 +12,8 @@ const session = require("express-session");
 
 const flash = require("express-flash");
 
+const moment = require("moment");
+
 require("dotenv").config();
 
 const database = require("./config/database");
@@ -51,7 +53,7 @@ app.use(
 
 //APP locals variable
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
-
+app.locals.moment = moment;
 app.use(express.static(`${__dirname}/public`));
 // Routes
 routeAdmin(app);

@@ -20,38 +20,50 @@ mixin table-tree(items, level = 1)
           min="1"
           style="width: 60px"
         )
-      td
-        if item.status == "active"
-          a(
-            href="javascript:;"
-            class="badge badge-success"
-            data-status=item.status
-            button-change-status
-            data-id=item.id
-          ) Hoạt động
-        else
-          a(
-            href="javascript:;"
-            class="badge badge-danger"
-            data-status=item.status
-            button-change-status
-            data-id=item.id
-          ) Dừng hoạt động
+      if(role.permissions.includes("products-category_edit"))
+        td
+          if item.status == "active"
+            a(
+              href="javascript:;"
+              class="badge badge-success"
+              data-status=item.status
+              button-change-status
+              data-id=item.id
+            ) Hoạt động
+          else
+            a(
+              href="javascript:;"
+              class="badge badge-danger"
+              data-status=item.status
+              button-change-status
+              data-id=item.id
+            ) Dừng hoạt động
+      else 
+        td
+          if item.status == "active"
+            span(
+              class="badge badge-success"
+            ) Hoạt động
+          else
+            span(
+              class="badge badge-danger"
+            ) Dừng hoạt động        
       td
         a(
           href=`${prefixAdmin}/products-category/detail/${item.id}`
           class="btn btn-success btn-sm"
         ) Chi tiết
-        a(
-          href=`${prefixAdmin}/products-category/edit/${item.id}`
-          class="btn btn-warning btn-sm ml-1"
-        ) Sửa
-        button(
-          type="button"
-          class="btn btn-danger btn-sm ml-1"
-          data-id=item.id
-          button-delete
-        ) Xoá
+        if(role.permissions.includes("products-category_edit"))
+          a(
+            href=`${prefixAdmin}/products-category/edit/${item.id}`
+            class="btn btn-warning btn-sm ml-1"
+          ) Sửa
+          button(
+            type="button"
+            class="btn btn-danger btn-sm ml-1"
+            data-id=item.id
+            button-delete
+          ) Xoá
 
     // Gọi đệ quy nếu có con
     if item.children && item.children.length > 0
