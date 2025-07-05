@@ -1,6 +1,7 @@
 const { deleteModel } = require("mongoose");
 const Product = require("../../models/product.model");
 const Account = require("../../models/account.model");
+const ProductCategory = require("../../models/product-category.model");
 const systemConfig = require("../../config/system");
 const filterStatusHelper = require("../../helper/filterStatus");
 const searchHelper = require("../../helper/search");
@@ -204,8 +205,10 @@ module.exports.deleteItem = async (req, res) => {
 // [CREATE] /admin/products/create
 
 module.exports.create = async (req, res) => {
+  const productCategories = await ProductCategory.find({ deleted: false });
   res.render("admin/pages/products/create", {
     pageTitle: "Tạo mới sản phẩm",
+    productCategories: productCategories,
   });
 };
 module.exports.createPost = async (req, res) => {
@@ -289,7 +292,10 @@ module.exports.detail = async (req, res) => {
     };
 
     const product = await Product.findOne(find);
-
+    if (product.category) {
+      const category = await ProductCategory.findOne({ _id: product.category });
+      product.productCategory = category.title;
+    }
     res.render("admin/pages/products/detail", {
       pageTitle: "Chi tiết sản phẩm",
       product: product,

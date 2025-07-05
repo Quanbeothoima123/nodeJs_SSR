@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema(
       slug: "title",
       unique: true,
     },
+    category: {
+      type: String,
+      default: "",
+    },
     createdBy: {
       account_id: String,
       createdAt: {

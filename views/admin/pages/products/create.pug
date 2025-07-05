@@ -1,5 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
 block main 
     +alert-error(5000) 
     +alert-success(5000)
@@ -15,6 +16,12 @@ block main
                 name="title"
                 required
             )
+        //- Danh mục sản phẩm
+        div(class="form-group")
+            label(for="category") Danh mục 
+            select(class="form-control", id="category", name="category")
+                if(productCategories)
+                    +select-tree(productCategories)
 
         div(class="form-group")
             label(for="desc") Mô tả

@@ -13,6 +13,14 @@ block main
                             img(src=product.thumbnail, alt="Thumbnail", class="img-fluid rounded border")
 
                     .col-md-8
+                        if (product.productCategory)
+                            p.mb-2
+                                strong Danh mục: 
+                                span.text-danger #{product.productCategory}
+                        else 
+                            p.mb-2
+                                strong Danh mục: 
+                                span.text-danger Chưa rõ
                         if (product.price)
                             p.mb-2
                                 strong Giá: 
