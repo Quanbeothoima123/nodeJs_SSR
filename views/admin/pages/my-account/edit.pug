@@ -1,0 +1,48 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main
+    +alert-error(5000) 
+    +alert-success(5000)
+    h1(class="mb-4") Chỉnh sửa trang cá nhân
+    form(
+      action=`${prefixAdmin}/my-account/edit?_method=PATCH`
+      method="POST"
+      enctype="multipart/form-data"
+      id="form-edit-product"
+    )
+      .row
+        .col-md-6
+          .form-group
+            label(for="fullName") Họ tên
+            input.form-control(type="text", name="fullName", id="fullName", value=user.fullName)
+
+          .form-group
+            label(for="email") Email
+            input.form-control(type="email", name="email", id="email", value=user.email )
+
+          .form-group
+            label(for="password") Mật khẩu
+            input.form-control(type="password", name="password", id="password")
+
+          .form-group
+            label(for="phone") Số điện thoại
+            input.form-control(type="text", name="phone", id="phone", value=user.phone)
+
+          div(class="form-group" upload-image)
+            label(for="avatar") Ảnh
+            input(
+                type="file"
+                class="form-control-file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                upload-image-input
+                
+            )
+            br
+            image(src=user.avatar upload-image-preview class="image-preview")
+
+      button.btn.btn-primary.mt-3(type="submit") Cập nhật
+      a.btn.btn-secondary.mt-3.ml-2(href=`${prefixAdmin}/dashboard`) Quay lại
+
+    script(src="/admin/js/user.js")
