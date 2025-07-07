@@ -22,6 +22,26 @@ block main
             select(class="form-control", id="category", name="category")
                 if(productCategories)
                     +select-tree(productCategories)
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="hot-product"
+                name="featured"
+                value="hot-product"
+            )
+            label(for="hot-product" class="form-check-label") Nổi bật
+
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="normal"
+                name="featured"
+                value="normal"
+                checked
+            )
+            label(for="normal" class="form-check-label") Không
 
         div(class="form-group")
             label(for="desc") Mô tả

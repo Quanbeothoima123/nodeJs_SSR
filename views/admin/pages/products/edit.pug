@@ -1,5 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/select-tree-category.pug
 block main 
     +alert-error(5000) 
     +alert-success(5000)
@@ -16,7 +17,34 @@ block main
                 required
                 value=product.title
             )
+        //- Danh mục sản phẩm
+        div(class="form-group")
+            label(for="category") Danh mục 
+            select(class="form-control", id="category", name="category")
+                if(productCategories)
+                    +select-tree(productCategories,product.category)
+        
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="hot-product"
+                name="featured"
+                value="hot-product"
+                checked=(product.featured=="hot-product"? true:false)
+            )
+            label(for="hot-product" class="form-check-label") Nổi bật
 
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="normal"
+                name="featured"
+                value="normal"
+                checked=(product.featured=="normal"? true:false)
+            )
+            label(for="normal" class="form-check-label") Không
         div(class="form-group")
             label(for="desc") Mô tả
             textarea(

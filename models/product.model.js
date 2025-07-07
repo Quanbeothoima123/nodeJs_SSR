@@ -20,6 +20,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    featured: {
+      type: String,
+      enum: ["hot", "normal"],
+      default: "normal",
+    },
     createdBy: {
       account_id: String,
       createdAt: {

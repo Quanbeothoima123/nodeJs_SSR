@@ -1,0 +1,10 @@
+mixin select-tree(items, selectedId, level = 0)
+  each item in items
+    - const prefix = '-- '.repeat(level)
+    - const isSelected = item.id && selectedId && item.id.toString() === selectedId.toString()
+    option(
+      value=item.id
+      selected=isSelected
+    ) #{prefix}#{item.title}
+    if Array.isArray(item.children) && item.children.length > 0
+      +select-tree(item.children, selectedId, level + 1)
