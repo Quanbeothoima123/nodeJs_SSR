@@ -16,15 +16,25 @@ module.exports.index = async (req, res) => {
   });
 };
 
-// [GET] /Products/:slug
+// [GET] /Products/detail/:slugProduct
 module.exports.detail = async (req, res) => {
   try {
     const find = {
       deleted: false,
-      slug: req.params.slug,
+      slug: req.params.slugProduct,
     };
 
     const product = await Product.findOne(find);
+
+    if (product.category) {
+      const productCategory = await ProductCategory.findOne({
+        deleted: false,
+        status: "active",
+        _id: product.category,
+      });
+
+      product.productCategory = productCategory;
+    }
 
     res.render("client/pages/products/detail", {
       pageTitle: product.title,
@@ -51,7 +61,6 @@ module.exports.category = async (req, res) => {
       Category.id
     );
     const listSubCategoryId = listSubCategory.map((item) => item.id);
-    console.log(listSubCategoryId);
     const products = await Product.find({
       deleted: false,
       category: { $in: [Category.id, ...listSubCategoryId] },
@@ -62,7 +71,6 @@ module.exports.category = async (req, res) => {
       pageTitle: Category.title,
     });
   } catch (error) {
-    console.error("Lỗi khi lấy sản phẩm theo danh mục:", error);
     res.status(500).send("Đã xảy ra lỗi máy chủ");
   }
 };

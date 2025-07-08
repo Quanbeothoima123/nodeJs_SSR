@@ -8,10 +8,17 @@ block main
                     img(src=product.thumbnail, alt=product.title, class="img-fluid rounded border")
 
             .col-md-6
-                h2.text-primary.mb-3 #{product.title}
+                h2.text-danger.mb-3 #{product.title}
+
+                if product.productCategory
+                h4.mb-2
+                    | Danh mục sản phẩm : 
+                    a.text-decoration-underline(href=`/products/${product.productCategory.slug}`) #{ product.productCategory.title}
+
 
                 if product.price
                     h4.text-success Giá: #{product.price}$
+                    
 
                 if product.discountPercentage
                     p.text-danger.mb-2 Giảm giá: #{product.discountPercentage}%
@@ -20,15 +27,32 @@ block main
                     p.mb-2 
                         strong Còn lại: 
                         span.badge.badge-warning.ml-2 #{product.stock}
+                form(
+                    action=`/cart/add/${product.id}`, method="POST", class="d-flex align-items-center")
+                    .input-group.w-auto(style="max-width: 150px")
+                        .input-group-prepend
+                            button.btn.btn-outline-secondary(
+                                type="button", 
+                                onclick="decrementQty()") -
+                        input#quantity.form-control.text-center(
+                            type="number",
+                            name="quantity",
+                            value="1", min="1", 
+                            max=product.stock)
+                        .input-group-append
+                            button.btn.btn-outline-secondary(
+                                type="button", 
+                                onclick="incrementQty()") +
 
-                if product.position
-                    p.text-muted.mb-2 Vị trí: #{product.position}
-
+                    button.btn.btn-success.ml-2(type="submit") Thêm vào giỏ hàng
                 // Nút mua hoặc quay lại (tuỳ bạn muốn dùng không)
                 .mt-4
                     a.btn.btn-outline-primary(href="/products") ← Quay lại danh sách
 
         if product.description
-            hr
-            h4.mt-5 Mô tả sản phẩm
-            p.text-justify.text-muted !{product.description}
+            .container.my-5
+                .row
+                    .col-12 
+                        +box-head("Mô tả sản phẩm")
+                        p.text-justify.text-muted !{product.description}
+    script(src="/js/detailAddCartButton.js") 
