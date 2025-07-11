@@ -1,58 +1,57 @@
 extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
+block head
+    link(rel="stylesheet", href="/css/product-detail.css")
+
 block main
     .container.mt-5
         .row
-            .col-md-6
+            .col-12.col-md-6.mb-4.mb-md-0
                 if product.thumbnail
-                    img(src=product.thumbnail, alt=product.title, class="img-fluid rounded border")
+                    img(src=product.thumbnail, alt=product.title, class="product-img")
 
-            .col-md-6
+            .col-12.col-md-6
                 h2.text-danger.mb-3 #{product.title}
 
                 if product.productCategory
-                h4.mb-2
-                    | Danh mục sản phẩm : 
-                    a.text-decoration-underline(href=`/products/${product.productCategory.slug}`) #{ product.productCategory.title}
-
+                    h4.mb-2
+                        | Danh mục sản phẩm: 
+                        a.text-decoration-underline(href=`/products/${product.productCategory.slug}`) #{product.productCategory.title}
 
                 if product.price
-                    h4.text-success Giá: #{product.price}$
-                    
+                    h4.text-success #{product.price}$
 
                 if product.discountPercentage
                     p.text-danger.mb-2 Giảm giá: #{product.discountPercentage}%
 
+                if product.discountPercentage
+                    h4.text-danger.mb-2 #{product.priceNew}$
+
                 if product.stock
                     p.mb-2 
                         strong Còn lại: 
-                        span.badge.badge-warning.ml-2 #{product.stock}
+                        span.stock-badge #{product.stock}
+
                 form(
                     action=`/cart/add/${product.id}`, method="POST", class="d-flex align-items-center")
-                    .input-group.w-auto(style="max-width: 150px")
-                        .input-group-prepend
-                            button.btn.btn-outline-secondary(
-                                type="button", 
-                                onclick="decrementQty()") -
-                        input#quantity.form-control.text-center(
+                    .quantity-group
+                        button.quantity-btn(type="button", onclick="decrementQty()") -
+                        input#quantity.quantity-input(
                             type="number",
                             name="quantity",
                             value="1", min="1", 
                             max=product.stock)
-                        .input-group-append
-                            button.btn.btn-outline-secondary(
-                                type="button", 
-                                onclick="incrementQty()") +
+                        button.quantity-btn(type="button", onclick="incrementQty()") +
+                    button.add-cart-btn(type="submit") Thêm vào giỏ hàng
 
-                    button.btn.btn-success.ml-2(type="submit") Thêm vào giỏ hàng
-                // Nút mua hoặc quay lại (tuỳ bạn muốn dùng không)
                 .mt-4
-                    a.btn.btn-outline-primary(href="/products") ← Quay lại danh sách
+                    a.back-btn(href="/products") ← Quay lại danh sách
 
         if product.description
             .container.my-5
                 .row
                     .col-12 
                         +box-head("Mô tả sản phẩm")
-                        p.text-justify.text-muted !{product.description}
-    script(src="/js/detailAddCartButton.js") 
+                        p.text-muted !{product.description}
+
+    script(src="/js/detailAddCartButton.js")

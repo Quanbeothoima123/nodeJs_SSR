@@ -149,3 +149,169 @@
   display: block;
 }
 /* End sub-menu */
+
+/* Show Alert */
+[show-alert] {
+  position: fixed;
+  top: 70px;
+  right: 15px;
+  z-index: 9999;
+}
+
+[show-alert].alert-hidden {
+  animation-name: alert-hidden;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+@keyframes alert-hidden {
+  from {
+    right: 15px;
+  }
+  to {
+    right: -100%;
+    display: none;
+  }
+}
+
+[show-alert] [close-alert] {
+  background: #ffffc4;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* End Show Alert */
+
+/* CSS cho bảng sản phẩm */
+.table-responsive {
+  margin-top: 20px;
+}
+
+.table {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  padding: 12px;
+  border-bottom: none;
+}
+
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 12px;
+}
+
+.img-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 2px solid #007bff;
+  transition: transform 0.3s ease;
+}
+
+.img-thumbnail:hover {
+  transform: scale(1.2);
+}
+
+.quantity-input {
+  max-width: 80px;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-danger {
+  padding: 5px 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #dc3545;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+  }
+
+  .table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    text-align: left;
+  }
+
+  .table tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .img-thumbnail {
+    width: 40px;
+    height: 40px;
+  }
+
+  .quantity-input {
+    width: 60px;
+  }
+}
+
+/* CSS cho tổng đơn hàng và nút thanh toán */
+.text-right {
+  font-weight: 600;
+  color: #28a745;
+}
+
+.btn-success {
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+p.noProduct {
+  text-align: center;
+  align-items: center;
+  color: red;
+}
+/* END CSS cho bảng sản phẩm */

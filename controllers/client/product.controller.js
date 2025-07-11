@@ -1,7 +1,7 @@
 const Product = require("../../models/product.model");
 const ProductCategory = require("../../models/product-category.model");
 const productsHelper = require("../../helper/products");
-const productCategorysHelper = require("../../helper/products-category");
+const productCategoryHelper = require("../../helper/products-category");
 module.exports.index = async (req, res) => {
   const products = await Product.find({
     status: "active",
@@ -25,6 +25,10 @@ module.exports.detail = async (req, res) => {
     };
 
     const product = await Product.findOne(find);
+
+    const priceNew = productsHelper.priceNewProduct(product);
+
+    product.priceNew = priceNew;
 
     if (product.category) {
       const productCategory = await ProductCategory.findOne({
@@ -57,7 +61,7 @@ module.exports.category = async (req, res) => {
     if (!Category) {
       return res.status(404).send("Danh mục không tồn tại");
     }
-    const listSubCategory = await productCategorysHelper.getSubCategory(
+    const listSubCategory = await productCategoryHelper.getSubCategory(
       Category.id
     );
     const listSubCategoryId = listSubCategory.map((item) => item.id);
