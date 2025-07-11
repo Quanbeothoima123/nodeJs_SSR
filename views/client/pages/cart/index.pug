@@ -4,36 +4,40 @@ include ../../mixins/box-head.pug
 block main
     .container
         if cartDetail.products.length > 0
-            .table-responsive
-                table.table.table-striped.table-bordered
-                    thead
-                        tr
-                            th(scope="col") STT
-                            th(scope="col") Ảnh
-                            th(scope="col") Tên
-                            th(scope="col") Giá
-                            th(scope="col") Số lượng
-                            th(scope="col") Tổng tiền
-                            th(scope="col") Hành động
-                    tbody
-                        each item, index in cartDetail.products
+            form(action="/checkout", method="POST")
+                .table-responsive
+                    table.table.table-striped.table-bordered
+                        thead
                             tr
-                                td #{index+1}
-                                td
-                                    a(href=`products/detail/${item.productInfo.slug}`)
-                                        img(src=item.productInfo.thumbnail, alt=item.productInfo.thumbnail, class="img-thumbnail")
-                                td #{item.productInfo.title}
-                                td #{item.productInfo.priceNew} $
-                                td
-                                    input(type="number",name="quantity", value=item.quantity, min="1",product-id=item.product_id, class="form-control quantity-input", style="width: 80px;")
-                                td #{item.totalPrice}$
-                                td
-                                    a(href=`cart/delete/${item.product_id}`, class="btn btn-danger btn-sm delete-btn") Xóa
-            .row.mt-3
-                .col-12
-                    h3(class="text-right") Tổng đơn hàng: #{cartDetail.totalPrice} $
-                div(class="text-right")
-                    a(href="/checkout" class="btn btn-success") THANH TOÁN
+                                th(scope="col") Chọn
+                                th(scope="col") STT
+                                th(scope="col") Ảnh
+                                th(scope="col") Tên
+                                th(scope="col") Giá
+                                th(scope="col") Số lượng
+                                th(scope="col") Tổng tiền
+                                th(scope="col") Hành động
+                        tbody
+                            each item, index in cartDetail.products
+                                tr
+                                    td 
+                                        input(type="checkbox" name="selectedProducts" value=item.product_id)
+                                    td #{index+1}
+                                    td
+                                        a(href=`products/detail/${item.productInfo.slug}`)
+                                            img(src=item.productInfo.thumbnail, alt=item.productInfo.thumbnail, class="img-thumbnail")
+                                    td #{item.productInfo.title}
+                                    td #{item.productInfo.priceNew} $
+                                    td
+                                        input(type="number",name="quantity", value=item.quantity, min="1",product-id=item.product_id, class="form-control quantity-input", style="width: 80px;")
+                                    td #{item.totalPrice}$
+                                    td
+                                        a(href=`cart/delete/${item.product_id}`, class="btn btn-danger btn-sm delete-btn") Xóa
+                .row.mt-3
+                    .col-12
+                        h3(class="text-right") Tổng đơn hàng: #{cartDetail.totalPrice} $
+                    div(class="text-right")
+                        button.btn.btn-success(type="submit") THANH TOÁN
         else
             p.noProduct Không có sản phẩm nào trong giỏ hàng
             a(href="/products" class="btn btn-success mt-3") Thêm sản phẩm
