@@ -102,8 +102,43 @@ module.exports.order = async (req, res) => {
   order.save();
   res.redirect(`/checkout/success/${order.id}`);
 };
+//[GET] success/:orderId
 module.exports.success = async (req, res) => {
+  const orderId = req.params.orderId;
+
+  const order = await Order.findOne({ _id: orderId });
+  if (!order) {
+    return res.status(404).send("Không tìm thấy đơn hàng");
+  }
+
+  const orderInfo = order.toObject();
+
+  const products = await Promise.all(
+    order.products.map(async (product) => {
+      const productDoc = await Product.findOne({
+        _id: product.product_id,
+      }).select("thumbnail title price discountPercentage");
+      if (!productDoc) return null;
+
+      const productWithQty = productDoc.toObject();
+      productWithQty.priceNew = productHelper.priceNewProduct(productDoc);
+      productWithQty.quantity = product.quantity;
+      return productWithQty;
+    })
+  );
+
+  // Lọc ra sản phẩm hợp lệ (phòng khi productDoc = null)
+  const validProducts = products.filter((p) => p);
+  const totalPrice = validProducts.reduce(
+    (sum, p) => sum + p.priceNew * p.quantity,
+    0
+  );
+
+  orderInfo.products = validProducts;
+
   res.render("client/pages/checkout/success", {
     pageTitle: "Đặt hàng thành công",
+    totalPrice,
+    orderInfo,
   });
 };

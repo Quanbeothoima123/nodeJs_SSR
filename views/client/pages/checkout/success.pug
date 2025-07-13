@@ -1,7 +1,49 @@
 extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
-block main 
-    .container.my-3 
-        .row 
-            .col-12 
+
+block main
+    .container.my-3
+        .row
+            .col-12
                 +box-head("Đặt hàng thành công")
+                .alert.alert-success
+                    | Chúc mừng bạn đã đặt hàng thành công! Chúng tôi sẽ xử lý đơn hàng trong thời gian sớm nhất.
+
+                h5.mt-4.mb-3 Thông tin cá nhân
+                table.table.table-bordered
+                    tbody
+                        tr
+                            th(scope="row") Họ tên
+                            td #{orderInfo.userInfo.fullName}
+                        tr
+                            th(scope="row") Số điện thoại
+                            td #{orderInfo.userInfo.phone}
+                        tr
+                            th(scope="row") Địa chỉ
+                            td #{orderInfo.userInfo.address}
+
+                h5.mt-5.mb-3 Thông tin đơn hàng
+                .table-responsive
+                    table.table.table-bordered.table-striped
+                        thead
+                            tr
+                                th STT
+                                th Ảnh
+                                th Tên
+                                th Giá
+                                th Số lượng
+                                th Tổng tiền
+                        tbody
+                            each product, index in orderInfo.products
+                                tr
+                                    td #{index + 1}
+                                    td
+                                        img(src=product.thumbnail, alt=product.title, width="60")
+                                    td #{product.title}
+                                    td #{product.priceNew}$ 
+                                    td #{product.quantity}
+                                    td #{product.priceNew * product.quantity}$
+                    
+                    //- Tổng đơn hàng
+                .text-right.mt-3
+                    h5.font-weight-bold Tổng đơn hàng: #{totalPrice}$
