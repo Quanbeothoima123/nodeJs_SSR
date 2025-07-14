@@ -6,7 +6,7 @@ header.header
         .inner-logo
           a(href="/")
             img(src="/images/logo.png", alt="Logo")
-      .col-5
+      .col-3
         form(action="/search", method="GET")
           div(class="form-group d-flex mb-0")
             input(
@@ -21,7 +21,7 @@ header.header
               class="btn btn-primary"
             ) Tìm
 
-      .col-4
+      .col-6
         .inner-menu
           ul
             li
@@ -32,4 +32,35 @@ header.header
               +sub-menu(layoutProductCategory,pathProduct)
             li
               a(href="/cart")
-                i(class="fas fa-shopping-cart") Giỏ hàng (#{miniCart? miniCart.totalQuantity:0})
+                i(class="fas fa-shopping-cart") 
+                |   Giỏ hàng (#{miniCart? miniCart.totalQuantity:0})
+            if(!user)
+              li
+                a(href="/user/login") 
+                  i(class="fa-solid fa-right-to-bracket") 
+                  |  Đăng nhập
+              li
+                a(href="/user/register") 
+                  i(class="fa-solid fa-key") 
+                  |  Đăng ký
+            else
+              li.nav-item.dropdown
+                a.nav-link.dropdown-toggle(
+                  href="#",
+                  id="userDropdown",
+                  role="button",
+                  data-toggle="dropdown",
+                  aria-haspopup="true",
+                  aria-expanded="false"
+                )
+                  i(class="fa-solid fa-user") 
+                  |  Chào, #{user.fullName}
+                .dropdown-menu(aria-labelledby="userDropdown")
+                  a.dropdown-item(href="/user/profile")
+                    i(class="fa-solid fa-id-badge mr-2")
+                    |  Thông tin cá nhân
+                  a.dropdown-item(href="/user/logout")
+                    i(class="fa-solid fa-right-from-bracket mr-2")
+                    |  Đăng xuất
+
+
