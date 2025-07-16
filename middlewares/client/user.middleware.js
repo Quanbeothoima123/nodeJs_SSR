@@ -12,6 +12,5 @@ module.exports.infoUser = async (req, res, next) => {
       res.locals.user = user;
     }
   }
-
   next();
 };

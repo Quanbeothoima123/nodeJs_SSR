@@ -92,3 +92,30 @@ module.exports.forgotPasswordPost = async (req, res, next) => {
   }
   next();
 };
+
+module.exports.resetPasswordPost = async (req, res, next) => {
+  const { password, passwordRewrite } = req.body;
+  const tokenUser = req.cookies.tokenUser;
+  // Kiểm tra token có tồn tại không
+  if (!tokenUser) {
+    req.flash("error", "Phiên làm việc đã hết. Vui lòng thử lại.");
+    return res.redirect("/user/login");
+  }
+
+  // Validate đơn giản
+  if (!password || !passwordRewrite) {
+    req.flash("error", "Vui lòng nhập đầy đủ mật khẩu.");
+    return res.redirect(req.get("referer"));
+  }
+
+  if (password.length < 6) {
+    req.flash("error", "Mật khẩu phải có ít nhất 6 ký tự.");
+    return res.redirect(req.get("referer"));
+  }
+
+  if (password !== passwordRewrite) {
+    req.flash("error", "Mật khẩu nhập lại không khớp.");
+    return res.redirect(req.get("referer"));
+  }
+  next();
+};

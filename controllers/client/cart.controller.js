@@ -97,8 +97,6 @@ module.exports.update = async (req, res) => {
   const cartId = req.cookies.cartId;
   const product_id = req.params.productId;
   const quantity = parseInt(req.params.quantity);
-  console.log(req.params);
-  console.log(quantity);
   await Cart.updateOne(
     { _id: cartId, "products.product_id": product_id },
     {

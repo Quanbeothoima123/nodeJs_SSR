@@ -1,0 +1,50 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  .container.mt-5
+    h2.mb-4 Thông tin người dùng
+
+    form(method="POST", action="/user/update", enctype="multipart/form-data")
+      .form-group
+        label(for="fullName") Họ và tên
+        input.form-control(
+          type="text",
+          name="fullName",
+          id="fullName",
+          value=user.fullName || '',
+          placeholder="Chưa cập nhật"
+        )
+
+      .form-group
+        label(for="email") Email
+        input.form-control(
+          type="email",
+          name="email",
+          id="email",
+          value=user.email || '',
+          placeholder="Chưa cập nhật",
+          readonly
+        )
+
+      .form-group
+        label(for="phone") Số điện thoại
+        input.form-control(
+          type="text",
+          name="phone",
+          id="phone",
+          value=user.phone || '',
+          placeholder="Chưa cập nhật"
+        )
+
+      .form-group
+        label(for="avatar") Ảnh đại diện
+        if user.avatar
+          img(src=user.avatar, alt="Avatar", width="100", height="100", class="d-block mb-2")
+        input.form-control-file(type="file", name="avatar", id="avatar")
+
+      .form-group
+        label Trạng thái
+        input.form-control(type="text", value=user.status, readonly)
+
+      button.btn.btn-primary(type="submit") Cập nhật thông tin
