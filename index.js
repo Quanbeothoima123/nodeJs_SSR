@@ -59,6 +59,12 @@ app.use(express.static(`${__dirname}/public`));
 routeAdmin(app);
 route(app);
 
+app.use((req, res, next) => {
+  res.status(404).render("client/pages/errors/404", {
+    pageTitle: "404 Not Found",
+  });
+});
+
 app.listen(port, () => {
   console.log("Ứng dụng đang lắng nghe port" + port);
 });

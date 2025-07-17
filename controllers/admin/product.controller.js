@@ -203,7 +203,7 @@ module.exports.deleteItem = async (req, res) => {
   res.redirect(req.get("referer") || "/admin/products");
 };
 
-// [CREATE] /admin/products/create
+// [POST] /admin/products/create
 
 module.exports.create = async (req, res) => {
   const productCategories = await ProductCategory.find({ deleted: false });

@@ -1,0 +1,85 @@
+/* General form spacing */
+form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Headings and title */
+h2,
+.box-head h1,
+.box-head h2 {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Input and label improvements */
+.form-group label {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
+  display: block;
+  font-size: 15px;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 10px 12px;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+/* Social input highlight */
+input[name="facebook"],
+input[name="tikTok"],
+input[name="instagram"],
+input[name="xTwister"] {
+  background-color: #f9f9fc;
+}
+
+/* Submit button */
+button.btn-primary {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+/* Optional: icon inside inputs (if needed later) */
+.form-control::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Optional: responsive tweaks */
+@media (max-width: 576px) {
+  form {
+    padding: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  button.btn-primary {
+    width: 100%;
+  }
+}

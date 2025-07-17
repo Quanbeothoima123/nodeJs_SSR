@@ -1,0 +1,112 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/box-head.pug
+block head 
+    link(rel="stylesheet", href="/admin/css/settings-general.css")
+block main
+    +alert-success(5000)
+    +box-head("Cài đặt chung")
+    form(action=`${prefixAdmin}/settings/general?_method=PATCH`, method='POST', enctype='multipart/form-data')
+        .form-group
+            label(for='websiteName') Tên website
+            input.form-control(
+            type='text',
+            id='websiteName',
+            name='websiteName',
+            value=settings.websiteName || '',
+            placeholder='Nhập tên website'
+            )
+
+        div(class="form-group" upload-image)
+            label(for="thumbnail") Logo
+            input(
+                type="file"
+                class="form-control-file"
+                id="logo"
+                name="logo"
+                accept="image/*"
+                upload-image-input
+                
+            )
+            br
+            button(type="button" class="btn btn-danger mt-2" upload-image-remove style="display: none") Xoá ảnh
+            br
+            image(src=settings.logo upload-image-preview class="image-preview")
+
+        .form-group
+            label(for='phone') Số điện thoại
+            input.form-control(
+            type='text',
+            id='phone',
+            name='phone',
+            value=settings.phone || '',
+            placeholder='Nhập số điện thoại'
+            )
+
+        .form-group
+            label(for='email') Email
+            input.form-control(
+            type='email',
+            id='email',
+            name='email',
+            value=settings.email || '',
+            placeholder='Nhập email'
+            )
+
+        .form-group
+            label(for='address') Địa chỉ
+            input.form-control(
+            type='text',
+            id='address',
+            name='address',
+            value=settings.address || '',
+            placeholder='Nhập địa chỉ'
+            )
+
+        .form-group
+            label(for='copyright') Copyright
+            input.form-control(
+            type='text',
+            id='copyright',
+            name='copyright',
+            value=settings.copyright || '',
+            placeholder='© 2025 by MyWebsite'
+            )
+        .form-group
+            label(for='copyright') TikTok
+            input.form-control(
+            type='text',
+            id='tikTok',
+            name='tikTok',
+            value=settings.tikTok || '',
+            placeholder='Điền link TikTok vào đây'
+            )
+        .form-group
+            label(for='facebook') FaceBook
+            input.form-control(
+            type='text',
+            id='facebook',
+            name='facebook',
+            value=settings.facebook || '',
+            placeholder='Điền link facebook vào đây'
+            )
+        .form-group
+            label(for='instagram') Instagram
+            input.form-control(
+            type='text',
+            id='instagram',
+            name='instagram',
+            value=settings.instagram || '',
+            placeholder='Điền link Instagram vào đây'
+            )
+        .form-group
+            label(for='xTwister') X
+            input.form-control(
+            type='text',
+            id='xTwister',
+            name='xTwister',
+            value=settings.xTwister || '',
+            placeholder='Điền link X vào đây'
+            )
+
+        button.btn.btn-primary(type='submit') Cập nhật

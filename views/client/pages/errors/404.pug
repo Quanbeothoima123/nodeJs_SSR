@@ -1,0 +1,79 @@
+html
+  head
+    title 404 - Không tìm thấy trang
+    style.
+      body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+      }
+      .container {
+        text-align: center;
+        padding: 20px;
+        max-width: 600px;
+        animation: fadeIn 1s ease-in-out;
+      }
+      h1 {
+        font-size: 120px;
+        margin: 0;
+        color: #fff;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      h2 {
+        font-size: 36px;
+        margin: 10px 0;
+        font-weight: 300;
+      }
+      p {
+        font-size: 18px;
+        margin: 20px 0;
+        line-height: 1.5;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #fff;
+        color: #764ba2;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+      .btn:hover {
+        background-color: #f0f0f0;
+        transform: translateY(-2px);
+      }
+      .error-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        color: #fff;
+        animation: pulse 2s infinite;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+      @media (max-width: 576px) {
+        h1 { font-size: 80px; }
+        h2 { font-size: 24px; }
+        p { font-size: 16px; }
+        .btn { padding: 10px 20px; font-size: 14px; }
+        .error-icon { font-size: 60px; }
+      }
+  body
+    .container
+      .error-icon &#128533;
+      h1 404
+      h2 Trang không tìm thấy
+      p Rất tiếc, trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.
+      a.btn(href="/") Về trang chủ

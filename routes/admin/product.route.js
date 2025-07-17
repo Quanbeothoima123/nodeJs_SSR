@@ -3,8 +3,6 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 
-// const storageMulter = require("../../helper/storageMulter");
-// const upload = multer({ storage: storageMulter() }); // dest  là thư mục root của dự án
 const upload = multer();
 
 const productValidate = require("../../validates/admin/product.validate");

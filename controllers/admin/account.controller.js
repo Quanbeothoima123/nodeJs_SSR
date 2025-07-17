@@ -145,7 +145,6 @@ module.exports.editPatch = async (req, res) => {
 
     // Nếu không trùng email thì tiếp tục cập nhật
     await Account.updateOne({ _id: accountId }, updateData);
-    console.log(updateData);
     req.flash("success", "Cập nhật tài khoản thành công");
     res.redirect(`${systemConfig.prefixAdmin}/accounts`);
   } catch (error) {

@@ -8,7 +8,7 @@ const roleRoutes = require("./role.route");
 const accountRoutes = require("./account.route");
 const authRoutes = require("./auth.route");
 const myAccountRouters = require("./my-account.route");
-
+const settingRouters = require("./setting.route");
 module.exports = (app) => {
   const PATH_ADMIN = systemConfig.prefixAdmin;
 
@@ -31,7 +31,7 @@ module.exports = (app) => {
     authMiddleware.requireAuth,
     myAccountRouters
   );
-
+  app.use(PATH_ADMIN + "/settings", authMiddleware.requireAuth, settingRouters);
   // Route auth KHÔNG cần xác thực
   app.use(PATH_ADMIN + "/auth", authRoutes);
 };

@@ -1,0 +1,110 @@
+.chat {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.inner-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Tin nhắn đến */
+.inner-incoming {
+  align-self: flex-start;
+  max-width: 70%;
+}
+
+.inner-incoming .inner-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: #333;
+}
+
+.inner-incoming .inner-content {
+  background: #f1f0f0;
+  padding: 10px 14px;
+  border-radius: 18px;
+  color: #000;
+  display: inline-block;
+  word-wrap: break-word;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Tin nhắn đi */
+.inner-outgoing {
+  align-self: flex-end;
+  max-width: 70%;
+}
+
+.inner-outgoing .inner-content {
+  background: linear-gradient(135deg, #f77dc2, #ed4694);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 18px 18px 0 18px;
+  font-size: 15px;
+  line-height: 1.4;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+/* Chân chat */
+.inner-foot {
+  border-top: 1px solid #ddd;
+  padding: 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inner-form {
+  display: flex;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  overflow: hidden;
+  background-color: #fff;
+  padding: 4px 10px;
+}
+
+.inner-form input[type="text"] {
+  border: none;
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+.inner-form button {
+  border: none;
+  background: none;
+  color: #f77dc2;
+  font-size: 18px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.inner-form button:hover {
+  color: #ed4694;
+}
+
+/* Scrollbar đẹp */
+.chat::-webkit-scrollbar {
+  width: 6px;
+}
+.chat::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}

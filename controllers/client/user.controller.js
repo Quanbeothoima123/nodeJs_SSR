@@ -204,3 +204,22 @@ module.exports.info = async (req, res) => {
     pageTitle: "Thông tin cá nhân",
   });
 };
+
+//[PATCH] user/info/update
+module.exports.infoUpdate = async (req, res) => {
+  try {
+    const tokenUser = req.cookies.tokenUser; // Lấy từ middleware auth
+    if (!req.body.avatar) {
+      const oldInfo = await User.findOne({ tokenUser });
+      if (oldInfo) req.body.avatar = oldInfo.avatar;
+    }
+
+    await User.updateOne({ tokenUser }, req.body);
+
+    req.flash("success", "Cập nhật thông tin cá nhân thành công");
+    res.redirect("/user/info");
+  } catch (error) {
+    req.flash("error", "Cập nhật thông tin thất bại");
+    res.redirect("/user/info");
+  }
+};
