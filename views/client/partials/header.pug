@@ -34,6 +34,10 @@ header.header
               a(href="/cart")
                 i(class="fas fa-shopping-cart") 
                 |   Giỏ hàng (#{miniCart? miniCart.totalQuantity:0})
+            li
+              a(href="/chat")
+                i(class="fa-solid fa-comments") 
+                |   Chat 
             if(!user)
               li
                 a(href="/user/login") 

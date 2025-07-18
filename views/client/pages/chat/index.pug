@@ -9,24 +9,14 @@ block main
                 +box-head("Chat")
         .row
             .col-12
-                .chat
+                .chat(my-id=user.id)
                     .inner-body
-                        .inner-incoming
-                            .inner-name Em Yêu
-                            .inner-content
-                            | A ơi sang nhà e nha, nhà e không có ai ở nhà cả
-                        .inner-outgoing
-                            .inner-content
-                            | Thế à? Ok e iu
-                        .inner-incoming
-                            .inner-name Em Yêu
-                            .inner-content
-                            | Nhanh nha nhanh nha
-                        .inner-outgoing
-                            .inner-content
-                            | Ck đến rồi mà thấy ai ở nhà đâu e? Khóa cửa mà :(
-                        .inner-incoming
-                            .inner-name Em Yêu
+                        each chat in chats
+                            div(class=(chat.user_id == user.id ? "inner-outgoing" : "inner-incoming"))
+                                if (chat.user_id != user.id)
+                                    .inner-name #{chat.infoUser.fullName}
+                                .inner-content
+                                    | #{chat.content}   
                     .inner-foot 
                         form(class="inner-form", action="")
                             input(
