@@ -14,6 +14,10 @@ const flash = require("express-flash");
 
 const moment = require("moment");
 
+const http = require("http");
+
+const { Server } = require("socket.io");
+
 require("dotenv").config();
 
 const database = require("./config/database");
@@ -29,6 +33,16 @@ const app = express();
 
 const port = process.env.PORT;
 
+// SOCKET IO
+const server = http.createServer(app);
+
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log("a user connected", socket.id);
+});
+
+//END SOCKET IO
 app.use(methodOverride("_method"));
 
 //parse application /x-www-form-urlencoded
@@ -65,6 +79,6 @@ app.use((req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Ứng dụng đang lắng nghe port" + port);
 });
