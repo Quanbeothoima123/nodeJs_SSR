@@ -16,13 +16,41 @@ block main
                                 if (chat.user_id != user.id)
                                     .inner-name #{chat.infoUser.fullName}
                                 .inner-content
-                                    | #{chat.content}   
+                                    if(chat.content)
+                                        | #{chat.content}   
+                                .inner-images
+                                    if(chat.images)
+                                        each image in chat.images 
+                                            img(src=image)
+                        div(class="inner-list-typing")
+                    .inner-preview-images   
+                        div.custom-file-container(data-upload-id="upload-images")
+                            label Upload File
+                                a.custom-file-container__image-clear(href="javascript:void(0)", title="Clear Image") ×
+                            label.custom-file-container__custom-file
+                                input(
+                                    type="file",
+                                    id="file-input-upload-images", 
+                                    class="custom-file-container__custom-file__custom-file-input",
+                                    accept="*",
+                                    multiple,
+                                    aria-label="Choose File"
+                                )
+                                input(type="hidden", name="MAX_FILE_SIZE", value="10485760")
+                                span.custom-file-container__custom-file__custom-file-control
+                            div.custom-file-container__image-preview
                     .inner-foot 
-                        form(class="inner-form", action="")
+                        form.inner-form(action="")
                             input(
                                 type="text",
                                 placeholder="Nhập nội dung...",
                                 name="content"
                             )
+                            label(class="btn btn-light mx-2 mb-0" for="file-input-upload-images")
+                                i.fa-regular.fa-image
+                            span.button-icon
+                                i.fa-regular.fa-face-smile
                             button
                                 i.fa-solid.fa-paper-plane
+    div.tooltip(role="tooltip")
+        emoji-picker(class="light")
