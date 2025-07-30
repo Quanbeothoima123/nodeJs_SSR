@@ -20,13 +20,13 @@ block main
             each item, index in roles
               tr
                 td #{index+1}
-                td #{item.title}
+                td.title #{item.title}
                 td !{item.description}
                 td
                   a(href=`${prefixAdmin}/roles/detail/${item._id}` class="btn btn-warning btn-sm") Chi tiết
                   if(role.permissions.includes("roles_edit")) 
                     a(href=`${prefixAdmin}/roles/edit/${item._id}` class="btn btn-success btn-sm ml-1") Sửa
-                    button(class="btn btn-danger btn-sm ml-1" data-id=item._id button-delete) Xóa
+                    button(class="btn btn-danger btn-sm ml-1" data-id=item._id button-delete data-title=item.title) Xóa
     form(
       action=""
       method="POST"
@@ -35,6 +35,7 @@ block main
     )
 
     form(
+      
       action=""
       method="POST"
       id="form-delete-item"

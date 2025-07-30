@@ -177,6 +177,7 @@ if (sort) {
 
   // ✅ Khi người dùng chọn sắp xếp
   sortSelect.addEventListener("change", (e) => {
+    console.log("Đang sort");
     const value = e.target.value;
     const [sortKey, sortValue] = value.split("-");
     url.searchParams.set("sortKey", sortKey);

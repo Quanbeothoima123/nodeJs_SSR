@@ -7,6 +7,8 @@ const controller = require("../../controllers/admin/account.controller");
 
 const accountValidate = require("../../validates/admin/account.validate");
 router.get("/", controller.index);
+router.patch("/change-multi", controller.changeMulti);
+router.patch("/change-status/:status/:id", controller.changeStatus);
 router.get("/create", controller.create);
 router.post(
   "/create",

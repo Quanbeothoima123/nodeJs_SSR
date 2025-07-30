@@ -20,7 +20,6 @@ if (buttonChangeStatus.length > 0) {
       }_method=PATCH`;
 
       formChangeStatus.action = action;
-      console.log("Form action:", action); // Debug URL
       formChangeStatus.submit();
     });
   });

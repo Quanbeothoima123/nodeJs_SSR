@@ -21,8 +21,8 @@ block main
       thead
           tr.bg-secondary
               th Tính năng
-              th(class="text-center") Quản trị viên
-              th(class="text-center") Quản lý nội dung
+              each item in records  
+                th(class="text-center") #{item.title}
       tbody
         tr(data-name="id" class="d-none")
           td

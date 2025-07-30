@@ -3,13 +3,49 @@ const Account = require("../../models/account.model");
 const Role = require("../../models/role.model");
 const md5 = require("md5");
 const systemConfig = require("../../config/system");
+const filterStatusHelper = require("../../helper/filterStatus");
+const searchHelper = require("../../helper/search");
+const paginationHelper = require("../../helper/pagination");
+const mongoose = require("mongoose");
 // [GET] /admin/accounts
 module.exports.index = async (req, res) => {
+  // đoạn bộ lọc
+  const filterStatus = filterStatusHelper(req.query);
   let find = {
     deleted: false,
   };
+  if (req.query.status) {
+    find.status = req.query.status;
+  }
+  const objectSearch = searchHelper(req.query);
 
-  const accounts = await Account.find(find).set("-password -token");
+  // đoạn tìm kiếm bằng từ tên sản phẩm
+  if (objectSearch.regex) {
+    find.title = objectSearch.regex;
+  }
+  //pagination
+  const countAccounts = await Account.countDocuments(find);
+  let objectPagination = paginationHelper(
+    {
+      currentPage: 1,
+      limitItems: 4,
+    },
+    req.query,
+    countAccounts
+  );
+
+  //SORT
+  let sort = {};
+  if (req.query.sortKey && req.query.sortValue) {
+    sort[req.query.sortKey] = req.query.sortValue;
+  } else sort.fullName = "desc";
+  //END SORT
+
+  const accounts = await Account.find(find)
+    .set("-password -token")
+    .sort(sort)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip);
 
   for (const account of accounts) {
     const role = await Role.findOne({
@@ -23,9 +59,93 @@ module.exports.index = async (req, res) => {
   res.render("admin/pages/accounts/index", {
     pageTitle: "Trang danh sách tài khoản",
     accounts: accounts,
+    filterStatus: filterStatus,
+    keyword: objectSearch.keyword,
+    pagination: objectPagination,
   });
 };
 
+//[PATCH] /admin/products/change-status/:status/:id
+module.exports.changeStatus = async (req, res) => {
+  const { status, id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send("ID không hợp lệ");
+  }
+
+  await Account.updateOne({ _id: id }, { status: status });
+
+  req.flash("success", "Cập nhật trạng thái thành công!");
+
+  res.redirect(req.get("referer") || "/admin/accounts"); // Quay trở lại trang trước hoặc trở về mặc định sản phẩm
+};
+
+//[PATCH] /admin/products/changeMulti, active, inactive, delete-all
+module.exports.changeMulti = async (req, res) => {
+  const { type, ids } = req.body;
+  const idArray = ids.split(",");
+
+  if (idArray.length === 0) {
+    return res.status(400).send("Không có ID hợp lệ");
+  }
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+  switch (type) {
+    case "active":
+      await Product.updateMany(
+        { _id: { $in: idArray } },
+        { status: "active", $push: { updatedBy: updatedBy } }
+      );
+      req.flash(
+        "success",
+        `Cập nhật trạng thái thành công của ${idArray.length} sản phẩm`
+      );
+      break;
+    case "inactive":
+      await Product.updateMany(
+        { _id: { $in: idArray } },
+        { status: "inactive", $push: { updatedBy: updatedBy } }
+      );
+      req.flash(
+        "success",
+        `Cập nhật trạng thái thành công của ${idArray.length} sản phẩm`
+      );
+      break;
+    case "delete-all":
+      await Product.updateMany(
+        { _id: { $in: idArray } },
+        {
+          deleted: true,
+          deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date(),
+          },
+        }
+      );
+      req.flash("success", `Xóa thành công của ${idArray.length} sản phẩm`);
+      break;
+    case "change-position":
+      for (const item of idArray) {
+        let [id, position] = item.split("-");
+        position = parseInt(position);
+        await Product.updateOne(
+          { _id: id },
+          { position: position, $push: { updatedBy: updatedBy } }
+        );
+      }
+      req.flash(
+        "success",
+        `Thay đổi vị trí thành công của ${idArray.length} sản phẩm`
+      );
+      break;
+    default:
+      return res.status(400).send("Loại không hợp lệ");
+  }
+
+  res.redirect(req.get("referer") || "/admin/products");
+};
 // [GET] /admin/accounts/create
 
 module.exports.create = async (req, res) => {

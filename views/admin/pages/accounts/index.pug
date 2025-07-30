@@ -1,14 +1,40 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi.pug
 block main
   +alert-error(5000) 
   +alert-success(5000)
   if(role.permissions.includes("accounts_view"))
     h1 Trang tài khoản
     .card.mb-3
+      .card-header Bộ lọc và Tìm kiếm
+      .card-body
+        .row
+          .col-6 
+            +filter-status(filterStatus)
+          .col-6
+            +search(keyword)
+    .card.mb-3
+      .card-header Sắp xếp
+      .card-body
+        .row 
+          .col-4(sortAccount)
+            div(sortAccount)
+              select.form-control(name="sortAccount" sort-select-account)
+                option(value="fullName-asc") Tên A - Z
+                option(value="fullName-desc") Tên Z - A
+              button.btn.btn-danger.mt-2(sort-clear-account) Clear
+                  
+    .card.mb-3
       .card-header Danh sách tài khoản
       .card-body
         .row
+          if(role.permissions.includes("products_edit")) 
+            .col-8
+              +form-change-multi(`${prefixAdmin}/accounts/change-multi?_method=PATCH`)
           if(role.permissions.includes("accounts_create"))  
             .col-8
               a(href=`${prefixAdmin}/accounts/create` class="btn btn-outline-success") + Thêm mới
@@ -36,22 +62,28 @@ block main
                 td #{item.email}
                 td #{item.phone}
                 td
-                  if item.status == 'active'
-                    span.badge.badge-success Hoạt động
+                  if item.status == "active"
+                    a(href="javascript:;" class="badge badge-success" data-status=item.status button-change-status data-id=item.id) Hoạt động
                   else
-                    span.badge.badge-secondary Không hoạt động
+                    a(href="javascript:;" class="badge badge-danger" data-status=item.status button-change-status data-id=item.id) Dừng hoạt động
                 td #{item.role.title}
                 td
                   a(href=`${prefixAdmin}/accounts/detail/${item._id}` class="btn btn-warning btn-sm") Chi tiết
                   if(role.permissions.includes("accounts_edit")) 
                     a(href=`${prefixAdmin}/accounts/edit/${item._id}` class="btn btn-success btn-sm ml-1") Sửa
                     button(class="btn btn-danger btn-sm ml-1" data-id=item._id button-delete) Xóa
-
+    +pagination(pagination)
     form(
       action=""
       method="POST"
       id="form-delete-item"
       data-path=`${prefixAdmin}/accounts/delete`
+    )
+    form(
+        action=""
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/accounts/change-status`
     )
 
     script(src="/admin/js/account.js")
