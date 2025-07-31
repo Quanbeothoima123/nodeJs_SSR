@@ -26,7 +26,7 @@ router.patch(
   accountValidate.editPatch,
   controller.editPatch
 );
-// router.delete("/delete/:id", controller.deleteItem);
+router.delete("/delete/:id", controller.deleteItem);
 // router.get("/permissions", controller.permissions);
 
 // router.patch("/permissions", controller.permissionsPatch);

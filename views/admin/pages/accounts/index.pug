@@ -50,6 +50,8 @@ block main
               th Email
               th SĐT
               th Trạng thái
+              th Người tạo
+              th Người cập nhật
               th Quyền
               th Hành động
           tbody
@@ -69,6 +71,20 @@ block main
                     a(href="javascript:;" class="badge badge-success" data-status=item.status button-change-status data-id=item.id) Hoạt động
                   else
                     a(href="javascript:;" class="badge badge-danger" data-status=item.status button-change-status data-id=item.id) Dừng hoạt động
+                td #{item.accountFullName}
+                  if(item.timeCreated)
+                    br
+                    #{moment(item.tiemCreated).format("DD/MM/YYYY HH:mm:ss")}   
+                  else
+                    br 
+                    span Chưa biết
+                td #{item.accountFullNameUpdated}
+                  if(item.timeUpdated)
+                    br
+                    #{moment(item.timeUpdated).format("DD/MM/YYYY HH:mm:ss")}   
+                  else 
+                    br
+                    span Chưa biết                
                 td #{item.role.title}
                 td
                   a(href=`${prefixAdmin}/accounts/detail/${item._id}` class="btn btn-warning btn-sm") Chi tiết

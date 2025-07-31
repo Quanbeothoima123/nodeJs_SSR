@@ -1,7 +1,8 @@
-module.exports.validateCreate = (req, res, next) => {
+const Account = require("../../models/account.model");
+module.exports.validateCreate = async (req, res, next) => {
   const { fullName, email, password, phone, role_id, status } = req.body;
   let hasError = false;
-
+  const emailExist = await Account.findOne({ email: email });
   // Kiểm tra họ tên
   if (!fullName || fullName.trim() === "") {
     req.flash("error", "Vui lòng nhập họ tên");
@@ -17,7 +18,11 @@ module.exports.validateCreate = (req, res, next) => {
     req.flash("error", "Email không hợp lệ");
     hasError = true;
   }
-
+  //  Kiếm tra tồn tại email
+  else if (emailExist) {
+    req.flash("error", "Email đã tồn tại trên hệ thống");
+    hasError = true;
+  }
   // Kiểm tra mật khẩu
   else if (!password || password.trim().length < 6) {
     req.flash("error", "Mật khẩu phải có ít nhất 6 ký tự");

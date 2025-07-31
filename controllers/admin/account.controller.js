@@ -59,6 +59,41 @@ module.exports.index = async (req, res) => {
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip);
 
+  //Lấy ra người tạo tài khoản
+  for (const account of accounts) {
+    const accountId = account?.createdBy?.account_id;
+    if (accountId === undefined) {
+      account.timeCreated = null;
+    } else {
+      account.timeCreated = account.createdBy.createdAt;
+    }
+    if (!accountId) {
+      account.accountFullName = "Chưa biết";
+      continue;
+    }
+
+    const user = await Account.findOne({ _id: accountId });
+    account.accountFullName = user ? user.fullName : "Chưa biết";
+  }
+
+  //Lấy ra người cập nhật tài khoản
+  for (const account of accounts) {
+    const accountId =
+      account?.updatedBy[account.updatedBy.length - 1]?.account_id;
+    if (accountId === undefined) {
+      account.timeUpdated = null;
+    } else {
+      account.timeUpdated =
+        account.updatedBy[account.updatedBy.length - 1].updatedAt;
+    }
+    if (!accountId) {
+      account.accountFullNameUpdated = "Chưa biết";
+      continue;
+    }
+
+    const user = await Account.findOne({ _id: accountId });
+    account.accountFullNameUpdated = user ? user.fullName : "Chưa biết";
+  }
   for (const account of accounts) {
     const role = await Role.findOne({
       _id: account.role_id,
@@ -184,6 +219,7 @@ module.exports.createPost = async (req, res) => {
     avatar: avatar || "", // nếu dùng multer để upload ảnh
     role_id,
     status,
+    createdBy: { account_id: res.locals.user.id },
   });
   account.password = md5(account.password);
   await account.save();
@@ -248,6 +284,7 @@ module.exports.edit = async (req, res) => {
 module.exports.editPatch = async (req, res) => {
   try {
     const accountId = req.params.id;
+    console.log(accountId);
     const emailExist = await Account.findOne({
       _id: { $ne: accountId },
       email: req.body.email,
@@ -262,7 +299,7 @@ module.exports.editPatch = async (req, res) => {
     const updateData = {
       fullName: req.body.fullName?.trim(),
       email: req.body.email?.trim(),
-      role: req.body.role,
+      role_id: req.body.role_id,
       status: req.body.status || "inactive",
       avatar: req.body.avatar,
     };
@@ -274,9 +311,15 @@ module.exports.editPatch = async (req, res) => {
       req.flash("error", "Tài khoản email đã tồn tại");
       return res.redirect(req.get("referer"));
     }
-
+    const updatedBy = {
+      account_id: res.locals.user.id,
+      updatedAt: new Date(),
+    };
     // Nếu không trùng email thì tiếp tục cập nhật
-    await Account.updateOne({ _id: accountId }, updateData);
+    await Account.updateOne(
+      { _id: accountId },
+      { $set: updateData, $push: { updatedBy: updatedBy } }
+    );
     req.flash("success", "Cập nhật tài khoản thành công");
     res.redirect(`${systemConfig.prefixAdmin}/accounts`);
   } catch (error) {
@@ -286,14 +329,23 @@ module.exports.editPatch = async (req, res) => {
   }
 };
 
-// //[DELETE] /admin/roles/delete/:id
+//[DELETE] /admin/accounts/delete/:id
 
-// module.exports.deleteItem = async (req, res) => {
-//   const id = req.params.id;
-//   await Role.updateOne({ _id: id }, { deleted: true, deleteAt: new Date() });
-//   req.flash("success", `Xóa thành công vai trò`);
-//   res.redirect(req.get("referer") || "/admin/roles");
-// };
+module.exports.deleteItem = async (req, res) => {
+  const id = req.params.id;
+  await Account.updateOne(
+    { _id: id },
+    {
+      deleted: true,
+      deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date(),
+      },
+    }
+  );
+  req.flash("success", `Xóa thành công tài khoản`);
+  res.redirect(req.get("referer") || "/admin/accounts");
+};
 
 // //[Permissions] /admin/roles/permissions
 
