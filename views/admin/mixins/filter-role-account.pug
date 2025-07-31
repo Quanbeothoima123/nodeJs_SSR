@@ -1,0 +1,5 @@
+mixin filter-role-account(filterRoleAccount)
+    select.form-control(name="sortAccount" filter-by-role-name)
+        option(value="null") Mặc định-Không lọc
+        each item in filterRoleAccount
+            option(value=item.id) #{item.title}

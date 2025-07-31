@@ -7,7 +7,6 @@ if (sortAccount) {
 
   // ✅ Khi người dùng chọn sắp xếp
   sortSelect.addEventListener("change", (e) => {
-    console.log("Đang sort");
     const value = e.target.value;
     const [sortKey, sortValue] = value.split("-");
     url.searchParams.set("sortKey", sortKey);
@@ -58,3 +57,29 @@ if (buttonChangeStatus.length > 0) {
   });
 }
 //End Chang Status
+
+// FILTER BY ROLE NAME
+const filterByRoleNameSelectItem = document.querySelector(
+  "[filter-by-role-name]"
+);
+if (filterByRoleNameSelectItem) {
+  let url = new URL(window.location.href);
+  // ✅ Khi người dùng chọn sắp xếp
+  filterByRoleNameSelectItem.addEventListener("change", (e) => {
+    const value = e.target.value;
+    if (value !== "null") {
+      url.searchParams.set("roleId", value);
+      window.location.href = url.href; // reload trang
+    } else {
+      url.searchParams.delete("roleId");
+      window.location.href = url.href;
+    }
+  });
+
+  // ✅ Khi trang load lại, giữ lại trạng thái của select
+  const currentFilterRoleId = url.searchParams.get("roleId");
+  if (currentFilterRoleId) {
+    filterByRoleNameSelectItem.value = currentFilterRoleId;
+  }
+}
+//  END FILTER BY ROLE NAME

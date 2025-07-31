@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
 include ../../mixins/filter-status.pug
+include ../../mixins/filter-role-account.pug
 include ../../mixins/search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/form-change-multi.pug
@@ -13,9 +14,11 @@ block main
       .card-header Bộ lọc và Tìm kiếm
       .card-body
         .row
-          .col-6 
+          .col-4 
             +filter-status(filterStatus)
-          .col-6
+          .col-4 
+            +filter-role-account(filterRoleAccount)
+          .col-4
             +search(keyword)
     .card.mb-3
       .card-header Sắp xếp

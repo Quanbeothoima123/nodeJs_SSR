@@ -14,15 +14,27 @@ module.exports.index = async (req, res) => {
   let find = {
     deleted: false,
   };
+  // Tìm kiếm theo bộ lọc active hoặc inactive
   if (req.query.status) {
     find.status = req.query.status;
+  }
+  // Lấy ra danh sách Role trong DB
+  const RoleList = await Role.find({ deleted: false });
+  // Tìm kiếm theo bộ lọc role
+  if (req.query.roleId) {
+    find.role_id = req.query.roleId;
   }
   const objectSearch = searchHelper(req.query);
 
   // đoạn tìm kiếm bằng từ tên sản phẩm
   if (objectSearch.regex) {
-    find.title = objectSearch.regex;
+    find.$or = [
+      { fullName: objectSearch.regex },
+      { email: objectSearch.regex },
+      { phone: objectSearch.regex },
+    ];
   }
+
   //pagination
   const countAccounts = await Account.countDocuments(find);
   let objectPagination = paginationHelper(
@@ -41,7 +53,7 @@ module.exports.index = async (req, res) => {
   } else sort.fullName = "desc";
   //END SORT
 
-  const accounts = await Account.find(find)
+  let accounts = await Account.find(find)
     .set("-password -token")
     .sort(sort)
     .limit(objectPagination.limitItems)
@@ -55,11 +67,11 @@ module.exports.index = async (req, res) => {
 
     account.role = role;
   }
-
   res.render("admin/pages/accounts/index", {
     pageTitle: "Trang danh sách tài khoản",
     accounts: accounts,
     filterStatus: filterStatus,
+    filterRoleAccount: RoleList,
     keyword: objectSearch.keyword,
     pagination: objectPagination,
   });
