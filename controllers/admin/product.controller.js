@@ -20,6 +20,10 @@ module.exports.product = async (req, res) => {
     find.status = req.query.status;
   }
 
+  if (req.query.categoryId) {
+    find.category = req.query.categoryId;
+  }
+
   const objectSearch = searchHelper(req.query);
 
   // đoạn tìm kiếm bằng từ tên sản phẩm
@@ -85,12 +89,16 @@ module.exports.product = async (req, res) => {
     const user = await Account.findOne({ _id: accountId });
     product.accountFullNameUpdated = user ? user.fullName : "Chưa biết";
   }
+  // Tạo cây hiển thị danh mục sản phẩm
+  const productCategories = await ProductCategory.find({ deleted: false });
+  const newProductCategories = createTreeHelper.tree(productCategories);
   res.render("admin/pages/products/index", {
     pageTitle: "Trang sản phẩm",
     products: products,
     filterStatus: filterStatus,
     keyword: objectSearch.keyword,
     pagination: objectPagination,
+    productCategories: newProductCategories,
   });
 
   //END PAGINATION

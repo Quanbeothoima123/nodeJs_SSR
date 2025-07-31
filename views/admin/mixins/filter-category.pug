@@ -1,0 +1,5 @@
+mixin filter-category(filterCategory)
+    select.form-control(filter-category)
+        option(value="null") Mặc định-Không lọc
+        each item in filterCategory
+            option(value=item.id) #{item.title}

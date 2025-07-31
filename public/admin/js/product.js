@@ -44,3 +44,27 @@ if (buttonDelete.length > 0) {
   });
 }
 //end delete item
+
+// FILTER BY Category
+const filterByCategory = document.getElementById("filterByCategory");
+if (filterByCategory) {
+  let url = new URL(window.location.href);
+  // ✅ Khi người dùng chọn sắp xếp
+  filterByCategory.addEventListener("change", (e) => {
+    const value = e.target.value;
+    if (value !== "null" && value !== "685b77d6ed45a4d7af304e65") {
+      url.searchParams.set("categoryId", value);
+      window.location.href = url.href; // reload trang
+    } else {
+      url.searchParams.delete("categoryId");
+      window.location.href = url.href;
+    }
+  });
+
+  // ✅ Khi trang load lại, giữ lại trạng thái của select
+  const currentFilterCategoryId = url.searchParams.get("categoryId");
+  if (currentFilterCategoryId) {
+    filterByCategory.value = currentFilterCategoryId;
+  }
+}
+//  END FILTER BY category
