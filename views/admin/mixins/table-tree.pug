@@ -48,6 +48,20 @@ mixin table-tree(items, level = 1)
             span(
               class="badge badge-danger"
             ) Dừng hoạt động        
+      td #{item.accountFullName}
+          if(item.timeCreated)
+              br
+              #{moment(item.tiemCreated).format("DD/MM/YYYY HH:mm:ss")}   
+          else
+              br 
+              span Chưa biết
+      td #{item.accountFullNameUpdated}
+          if(item.timeUpdated)
+              br
+              #{moment(item.timeUpdated).format("DD/MM/YYYY HH:mm:ss")}   
+          else 
+              br
+              span Chưa biết
       td
         a(
           href=`${prefixAdmin}/products-category/detail/${item.id}`

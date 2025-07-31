@@ -1,5 +1,6 @@
 const { deleteModel } = require("mongoose");
 const ProductCategory = require("../../models/product-category.model");
+const Account = require("../../models/account.model");
 const systemConfig = require("../../config/system");
 const filterStatusHelper = require("../../helper/filterStatus");
 const searchHelper = require("../../helper/search");
@@ -23,8 +24,42 @@ module.exports.index = async (req, res) => {
   if (objectSearch.regex) {
     find.title = objectSearch.regex;
   }
-
   const records = await ProductCategory.find(find);
+  //Lấy ra người tạo sản phẩm và thời gian tạo sản phẩm
+  for (const record of records) {
+    const accountId = record?.createdBy?.account_id;
+    if (accountId === undefined) {
+      record.timeCreated = null;
+    } else {
+      record.timeCreated = record.createdBy.createdAt;
+    }
+    if (!accountId) {
+      record.accountFullName = "Chưa biết";
+      continue;
+    }
+
+    const user = await Account.findOne({ _id: accountId });
+    record.accountFullName = user ? user.fullName : "Chưa biết";
+  }
+
+  //Lấy ra người cập nhật sản phẩm mới nhất và thời gian cập nhật sản phẩm
+  for (const record of records) {
+    const accountId =
+      record?.updatedBy[record.updatedBy.length - 1]?.account_id;
+    if (accountId === undefined) {
+      record.timeUpdated = null;
+    } else {
+      record.timeUpdated =
+        record.updatedBy[record.updatedBy.length - 1].updatedAt;
+    }
+    if (!accountId) {
+      record.accountFullNameUpdated = "Chưa biết";
+      continue;
+    }
+
+    const user = await Account.findOne({ _id: accountId });
+    record.accountFullNameUpdated = user ? user.fullName : "Chưa biết";
+  }
   const newRecords = createTreeHelper.tree(records);
 
   res.render("admin/pages/products-category/index", {
@@ -50,13 +85,19 @@ module.exports.changeStatus = async (req, res) => {
   res.redirect(req.get("referer") || "/admin/products-category"); // Quay trở lại trang trước hoặc trở về mặc định danh sách sản phẩm
 };
 
-//[DELETE] /admin/products/delete/:id
+//[DELETE] /admin/products-category/delete/:id
 
 module.exports.deleteItem = async (req, res) => {
   const id = req.params.id;
   await ProductCategory.updateOne(
     { _id: id },
-    { deleted: true, deleteAt: new Date() }
+    {
+      deleted: true,
+      deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date(),
+      },
+    }
   );
   req.flash("success", `Xóa thành công danh mục sản phẩm`);
   res.redirect(req.get("referer") || "/admin/products-category");
@@ -129,7 +170,7 @@ module.exports.create = async (req, res) => {
     deleted: false,
   };
   const records = await ProductCategory.find(find);
-
+  const newRecords = createTreeHelper.tree(records);
   res.render("admin/pages/products-category/create", {
     pageTitle: "Tạo danh mục sản phẩm",
     records: newRecords,
@@ -161,7 +202,7 @@ module.exports.createPost = async (req, res) => {
   } else {
     data.position = parseInt(position);
   }
-
+  data.createdBy = { account_id: res.locals.user.id };
   // Tạo và lưu danh mục
   const category = new ProductCategory(data);
   await category.save();
@@ -210,9 +251,15 @@ module.exports.editPatch = async (req, res) => {
     position: parseInt(position) || 1,
     thumbnail: req.body.thumbnail || oldCategory.thumbnail, // Giữ ảnh cũ nếu không upload ảnh mới
   };
-
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
   try {
-    await ProductCategory.updateOne({ _id: req.params.id }, data);
+    await ProductCategory.updateOne(
+      { _id: req.params.id },
+      { $set: data, $push: { updatedBy: updatedBy } }
+    );
     req.flash("success", "Cập nhật danh mục thành công");
   } catch (error) {
     console.error(error);
