@@ -1,0 +1,66 @@
+extends ../../layouts/default.pug
+block head 
+    link(rel="stylesheet", href="/admin/css/detail-post.css")
+block main
+    .container.mt-4
+        .card.shadow
+            .card-body
+                if (post.title)
+                    h2.card-title.text-primary.mb-4 #{post.title}
+
+                .row
+                    if (post.thumbnail)
+                        .col-md-4.mb-3
+                            img(
+                                src=post.thumbnail,
+                                alt="Ảnh bài viết",
+                                class="img-fluid rounded border"
+                            )
+
+                    .col-md-8
+                        if (post.postCategory)
+                            p.mb-2
+                                strong Danh mục: 
+                                span.text-danger #{post.postCategory}
+                        else 
+                            p.mb-2
+                                strong Danh mục: 
+                                span.text-danger Chưa rõ
+
+                        if (post.featured)
+                            p.mb-2
+                                strong Nổi bật: 
+                                if (post.featured === "hot")
+                                    span.badge.badge-warning.ml-1 Có
+                                else
+                                    span.badge.badge-secondary.ml-1 Không
+
+                        if (post.status)
+                            p.mb-2
+                                strong Trạng thái: 
+                                if (post.status === "active")
+                                    span.badge.badge-success.ml-1 Hoạt động
+                                else
+                                    span.badge.badge-danger.ml-1 Dừng hoạt động
+                        
+                        if (post.position)
+                            p.mb-2
+                                strong Vị trí: 
+                                span #{post.position}
+
+                if (post.description)
+                    hr
+                    h5.mt-4 Mô tả ngắn:
+                    .text-muted !{post.description}
+
+                if (post.content)
+                    hr
+                    h5.mt-4 Nội dung chi tiết:
+                    .content-wrapper.mt-3 !{post.content}
+
+                a(
+                    href=`${prefixAdmin}/posts/edit/${post.id}`,
+                    class="btn btn-warning mt-4"
+                ) Chỉnh sửa
+
+    script(src="/admin/js/post.js")

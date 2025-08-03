@@ -1,0 +1,27 @@
+.content-wrapper {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.content-wrapper img,
+.content-wrapper iframe,
+.content-wrapper table {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+}
+
+.content-wrapper table {
+  border-collapse: collapse;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.content-wrapper table td,
+.content-wrapper table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}

@@ -1,0 +1,42 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-4
+    .card.shadow
+      .card-body
+        if postCategory.title
+          h2.card-title.text-primary.mb-4 #{postCategory.title}
+
+        .row
+          if postCategory.thumbnail
+            .col-md-4.mb-3
+              img(src=postCategory.thumbnail, alt="Thumbnail", class="img-fluid rounded border")
+
+          .col-md-8
+            if postCategoryParent
+              p.mb-2
+                strong Danh mục cha: 
+                span.text-dark #{postCategoryParent.title}
+
+            if postCategory.status
+              p.mb-2
+                strong Trạng thái: 
+                if postCategory.status === "active"
+                  span.badge.badge-success.ml-1 Hoạt động
+                else
+                  span.badge.badge-danger.ml-1 Dừng hoạt động
+
+            if postCategory.position
+              p.mb-2
+                strong Vị trí: 
+                span #{postCategory.position}
+
+        if postCategory.description
+          hr
+          h5.mt-4 Mô tả danh mục:
+          .text-muted!= postCategory.description
+
+        a(
+          href=`${prefixAdmin}/posts-category/edit/${postCategory._id}`
+          class="btn btn-warning mt-3"
+        ) Chỉnh sửa

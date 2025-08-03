@@ -1,0 +1,107 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
+block main 
+  +alert-error(5000) 
+  +alert-success(5000)
+  h1(class="mb-4") Chỉnh sửa danh mục bài viết 
+
+  form(
+    action=`${prefixAdmin}/posts-category/edit/${postCategory._id}?_method=PATCH`
+    id="form-edit-post-category"
+    method="POST"
+    enctype="multipart/form-data"
+  )
+    // Tiêu đề
+    .form-group
+      label(for="title") Tiêu đề
+      input.form-control(
+        type="text"
+        id="title"
+        name="title"
+        required
+        value=postCategory.title
+      )
+
+    // Mô tả (TinyMCE)
+    .form-group
+      label(for="desc") Mô tả
+      textarea.form-control(
+        id="desc"
+        name="description"
+        rows="5"
+      )= postCategory.description
+
+    // Danh mục cha
+    div(class="form-group")
+      label(for="parent_id") Danh mục cha
+      select(
+        name="parent_id"
+        id="parent_id"
+        class="form-control"
+      )
+        option(value="") -- Chọn danh mục cha --
+        if (records)
+          +select-tree(records,postCategory.parent_id)
+
+
+    // Ảnh thumbnail
+    .form-group(upload-image)
+      label(for="thumbnail") Ảnh
+      input.form-control-file(
+        type="file"
+        id="thumbnail"
+        name="thumbnail"
+        accept="image/*"
+        upload-image-input
+      )
+      br
+      button.btn.btn-danger.mt-2(
+        type="button"
+        upload-image-remove
+        style="display: none"
+      ) Xoá ảnh
+      br
+      image(
+        src=postCategory.thumbnail
+        upload-image-preview
+        class="image-preview"
+      )
+
+    // Vị trí
+    .form-group
+      label(for="position") Vị trí
+      input.form-control(
+        type="number"
+        id="position"
+        name="position"
+        placeholder="Tự động tăng"
+        value=postCategory.position
+        min="1"
+      )
+
+    // Trạng thái
+    .form-group.form-check.form-check-inline
+      input.form-check-input(
+        type="radio"
+        id="statusActive"
+        name="status"
+        value="active"
+        checked=postCategory.status == "active"
+      )
+      label.form-check-label(for="statusActive") Hoạt động
+
+    .form-group.form-check.form-check-inline
+      input.form-check-input(
+        type="radio"
+        id="statusInActive"
+        name="status"
+        value="inactive"
+        checked=postCategory.status == "inactive"
+      )
+      label.form-check-label(for="statusInActive") Dừng hoạt động
+
+    // Nút cập nhật
+    .form-group
+      button.btn.btn-primary(type="submit") Cập nhật
+

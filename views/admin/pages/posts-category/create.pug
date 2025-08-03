@@ -3,12 +3,12 @@ include ../../mixins/alert.pug
 include ../../mixins/select-tree.pug
 block main 
     +alert-error(5000) 
-    h1(class="mb-4") Thêm mới danh mục sản phẩm
+    h1(class="mb-4") Thêm mới danh mục bài viết
 
-    form(action=`${prefixAdmin}/products-category/create`, id="form-create-category", method="POST" enctype="multipart/form-data")
+    form(action=`${prefixAdmin}/posts-category/create`, id="form-create-post-category", method="POST" enctype="multipart/form-data")
         //- Tiêu đề
         div(class="form-group")
-            label(for="title") Tên danh mục
+            label(for="title") Tên danh mục bài viết
             input(
                 type="text"
                 class="form-control"
@@ -19,7 +19,7 @@ block main
 
         //- Danh mục cha
         div(class="form-group")
-            label(for="parent_id") Danh mục cha
+            label(for="parent_id") Danh mục bài viết
             select(class="form-control", id="parent_id", name="parent_id")
                 option(value="") -- Chọn danh mục cha (nếu có) --
                 if(records)
@@ -37,7 +37,7 @@ block main
 
         //- Ảnh thumbnail
         div(class="form-group" upload-image)
-            label(for="thumbnail") Ảnh danh mục
+            label(for="thumbnail") Ảnh danh mục bài viết
             input(
                 type="file"
                 class="form-control-file"
@@ -92,4 +92,4 @@ block main
                 class="btn btn-success"
             ) Tạo danh mục
 
-    //- script(src="/admin/js/category.js")
+    script(src="/admin/js/category.js")
