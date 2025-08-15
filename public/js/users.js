@@ -15,18 +15,29 @@ document.addEventListener("click", (event) => {
     btn.classList.add("btn-secondary");
     btn.setAttribute("data-status", "cancel");
     socket.emit("CLIENT_ADD_FRIEND", userId);
-  } else if (status === "cancel" || status === "cancelAccept") {
+  } else if (
+    status === "cancel" ||
+    status === "cancelAccept" ||
+    status === "cancelFriend"
+  ) {
     // Gửi socket
     if (status === "cancel") {
-      socket.emit("CLIENT_CANCEL_FRIEND", userId);
-    } else {
       socket.emit("CLIENT_CANCEL_FRIEND_REQUEST", userId);
+    } else if (status === "cancelAccept") {
+      socket.emit("CLIENT_CANCEL_FRIEND_ACCEPT", userId);
+    } else {
+      socket.emit("CLIENT_CANCEL_FRIEND", userId);
     }
 
     // Xóa nút "Đồng ý" nếu còn tồn tại
     const acceptBtn = btnContainer.querySelector('[data-status="accept"]');
     if (acceptBtn) {
       acceptBtn.remove();
+    }
+    // Xóa nút "Nhắn tin" nếu còn tồn tại
+    const messageBtn = btnContainer.querySelector('[data-status="message"]');
+    if (messageBtn) {
+      messageBtn.remove();
     }
 
     // Đổi nút hiện tại về "Kết bạn"
@@ -55,3 +66,16 @@ document.addEventListener("click", (event) => {
   }
 });
 // HẾt Chức năng kết bạn/ hủy/ đồng ý/ hủy yêu cầu kết bạn
+
+// SERVER_RETURN_LENGTH_ACCEPT_FRIEND
+const bagUserAccept = document.querySelector("[badge-users-accept]");
+if (bagUserAccept) {
+  const userId = bagUserAccept.getAttribute("badge-users-accept");
+  socket.on("SERVER_RETURN_LENGTH_ACCEPT_FRIEND", (data) => {
+    if (userId === data.userIdB) {
+      bagUserAccept.innerHTML = data.lengthAcceptFriends;
+    }
+  });
+}
+
+//End SERVER_RETURN_LENGTH_ACCEPT_FRIEND

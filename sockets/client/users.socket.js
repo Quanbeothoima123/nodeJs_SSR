@@ -4,9 +4,9 @@ module.exports = (res) => {
   const myId = res.locals.user.id;
   _io.once("connection", (socket) => {
     // Chức năng kết bạn
-    socket.on("CLIENT_ADD_FRIEND", async (userRequestId) => {
+    socket.on("CLIENT_ADD_FRIEND", async (userIdB) => {
       try {
-        if (myId === userRequestId) {
+        if (myId === userIdB) {
           socket.emit("SERVER_ERROR", {
             message: "Không thể gửi yêu cầu kết bạn cho chính mình",
           });
@@ -14,26 +14,37 @@ module.exports = (res) => {
         }
 
         const existRequestIdAForB = await User.findOne({
-          _id: userRequestId,
+          _id: userIdB,
           acceptFriends: myId,
         });
         if (!existRequestIdAForB) {
           await User.updateOne(
-            { _id: userRequestId },
+            { _id: userIdB },
             { $push: { acceptFriends: myId } }
           );
         }
 
         const existRequestBInA = await User.findOne({
           _id: myId,
-          requestFriends: userRequestId,
+          requestFriends: userIdB,
         });
         if (!existRequestBInA) {
           await User.updateOne(
             { _id: myId },
-            { $push: { requestFriends: userRequestId } }
+            { $push: { requestFriends: userIdB } }
           );
         }
+        const infoB = await User.findOne({
+          _id: userIdB,
+        });
+        const lengthAcceptFriends = infoB.acceptFriends.length;
+        socket.broadcast.emit(
+          "SERVER_RETURN_LENGTH_ACCEPT_FRIEND",
+          (data = {
+            userIdB,
+            lengthAcceptFriends,
+          })
+        );
       } catch (error) {
         socket.emit("SERVER_ERROR", {
           message: "Lỗi khi xử lý yêu cầu kết bạn",
@@ -43,38 +54,50 @@ module.exports = (res) => {
     });
 
     // Chức năng hủy kết bạn khi đã gửi kết bạn trước đó
-    socket.on("CLIENT_CANCEL_FRIEND", async (userCancelId) => {
+    socket.on("CLIENT_CANCEL_FRIEND_REQUEST", async (userIdB) => {
       try {
-        if (myId === userCancelId) {
+        console.log("Chạy vào hàm CLIENT_CANCEL_FRIEND_REQUEST");
+        if (myId === userIdB) {
           socket.emit("SERVER_ERROR", {
             message: "Không thể hủy kết bạn cho chính mình",
           });
           return;
         }
 
-        // Xóa myId khỏi acceptFriends của userCancelId
+        // Xóa myId khỏi acceptFriends của userIdB
         const existRequestIdAForB = await User.findOne({
-          _id: userCancelId,
+          _id: userIdB,
           acceptFriends: myId,
         });
         if (existRequestIdAForB) {
           await User.updateOne(
-            { _id: userCancelId },
+            { _id: userIdB },
             { $pull: { acceptFriends: myId } }
           );
         }
 
-        // Xóa userCancelId khỏi requestFriends của myId
+        // Xóa userIdB khỏi requestFriends của myId
         const existRequestBInA = await User.findOne({
           _id: myId,
-          requestFriends: userCancelId,
+          requestFriends: userIdB,
         });
         if (existRequestBInA) {
           await User.updateOne(
             { _id: myId },
-            { $pull: { requestFriends: userCancelId } }
+            { $pull: { requestFriends: userIdB } }
           );
         }
+        const infoB = await User.findOne({
+          _id: userIdB,
+        });
+        const lengthAcceptFriends = infoB.acceptFriends.length;
+        socket.broadcast.emit(
+          "SERVER_RETURN_LENGTH_ACCEPT_FRIEND",
+          (data = {
+            userIdB,
+            lengthAcceptFriends,
+          })
+        );
       } catch (error) {
         socket.emit("SERVER_ERROR", {
           message: "Lỗi khi hủy yêu cầu kết bạn",
@@ -83,7 +106,7 @@ module.exports = (res) => {
       }
     });
     //  Chức năng hủy yêu cầu kết bạn
-    socket.on("CLIENT_CANCEL_FRIEND_REQUEST", async (userIdA) => {
+    socket.on("CLIENT_CANCEL_FRIEND_ACCEPT", async (userIdA) => {
       try {
         if (myId === userIdA) {
           socket.emit("SERVER_ERROR", {
@@ -115,8 +138,6 @@ module.exports = (res) => {
           { _id: userIdA, acceptFriends: myId },
           { $pull: { acceptFriends: myId } }
         );
-
-        socket.emit("SERVER_FRIEND_REQUEST_CANCELLED", { userId: userIdA });
       } catch (error) {
         socket.emit("SERVER_ERROR", {
           message: "Lỗi khi hủy yêu cầu kết bạn",
@@ -169,10 +190,37 @@ module.exports = (res) => {
           { _id: myId },
           { $push: { friendList: { user_id: userIdA } } }
         );
-        socket.emit("SERVER_FRIEND_ACCEPT", { userId: userIdA });
       } catch (error) {
         socket.emit("SERVER_ERROR", {
           message: "Lỗi khi đồng ý kết bạn",
+          error: error.message,
+        });
+      }
+    });
+    //  Chức năng hủy bạn bè
+    socket.on("CLIENT_CANCEL_FRIEND", async (userIdA) => {
+      try {
+        if (myId === userIdA) {
+          socket.emit("SERVER_ERROR", {
+            message: "Không thể hủy kết bạn với chính mình",
+          });
+          return;
+        }
+
+        // Xóa id của A trong listFriend của B
+        await User.updateOne(
+          { _id: userIdA },
+          { $pull: { friendList: { user_id: myId } } }
+        );
+
+        // Xóa id của B trong listFriend của A
+        await User.updateOne(
+          { _id: myId },
+          { $pull: { friendList: { user_id: userIdA } } }
+        );
+      } catch (error) {
+        socket.emit("SERVER_ERROR", {
+          message: "Lỗi khi hủy bạn bè",
           error: error.message,
         });
       }
