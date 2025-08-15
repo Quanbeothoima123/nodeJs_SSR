@@ -7,6 +7,7 @@ block main
         .row 
             .col-12 
                 +box-head("Chat")
+        include ../../partials/list-btn-users.pug
         .row
             .col-12
                 .chat(my-id=user.id)
@@ -54,3 +55,5 @@ block main
                                 i.fa-solid.fa-paper-plane
     div.tooltip(role="tooltip")
         emoji-picker(class="light")
+block script 
+    script( type="module" src="/js/chat.js")

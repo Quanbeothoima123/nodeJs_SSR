@@ -1,0 +1,27 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block head
+  link(rel="stylesheet", href="/css/friend.css")
+
+block main
+  .container.my-3
+    include ../../partials/list-btn-users.pug
+    .row
+      .col-12
+        +box-head("Danh sách bạn bè")
+    .row
+      each user in users
+        .col-6
+          .box-user
+            .inner-avatar
+              img(src=user.avatar || 'https://robohash.org/defaultAvatar.png', alt=user.fullName)
+            .inner-info
+              .inner-name #{user.fullName}
+              .inner-email #{user.email}
+              .inner-buttons
+                button.btn.btn-sm.btn-primary.mr-1.btn-friend(data-status="message", data-id=user._id) Nhắn tin
+                button.btn.btn-sm.btn-secondary.mr-1.btn-friend(data-status="cancelFriend", data-id=user._id) Hủy kết bạn
+
+block script
+  script(src="/js/users.js")
